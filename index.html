@@ -1,368 +1,426 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>Bundled Page</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #faf9f5; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-    #__bundler_loading { position: fixed; bottom: 20px; right: 20px; font: 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif; color: #666; background: #fff; padding: 8px 14px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.12); z-index: 10000; }
-    #__bundler_thumbnail { position: fixed; inset: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #faf9f5; z-index: 9999; }
-    #__bundler_thumbnail svg { width: 100%; height: 100%; object-fit: contain; }
-    #__bundler_placeholder { color: #999; font-size: 14px; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #faf9f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    #__bundler_loading {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font: 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #666;
+      background: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+      z-index: 10000;
+    }
+
+    #__bundler_thumbnail {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #faf9f5;
+      z-index: 9999;
+    }
+
+    #__bundler_thumbnail svg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    #__bundler_placeholder {
+      color: #999;
+      font-size: 14px;
+    }
   </style>
   <noscript>
-    <style>#__bundler_loading { display: none; }</style>
-    <div style="position:fixed;bottom:12px;left:12px;font:13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#999;background:rgba(255,255,255,0.9);padding:6px 12px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.08);z-index:10000;">
+    <style>
+      #__bundler_loading {
+        display: none;
+      }
+    </style>
+    <div
+      style="position:fixed;bottom:12px;left:12px;font:13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#999;background:rgba(255,255,255,0.9);padding:6px 12px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.08);z-index:10000;">
       This page requires JavaScript to display.
     </div>
   </noscript>
 </head>
+
 <body>
-  <div id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#141d57"></rect><circle cx="50" cy="50" r="12" fill="#ffffff"></circle><circle cx="26" cy="30" r="6" fill="#8fb9ff"></circle><circle cx="74" cy="34" r="6" fill="#8fb9ff"></circle><circle cx="30" cy="72" r="6" fill="#8fb9ff"></circle><circle cx="70" cy="70" r="6" fill="#ec7f3d"></circle></svg></div>
+  <div id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <rect width="100" height="100" fill="#141d57"></rect>
+      <circle cx="50" cy="50" r="12" fill="#ffffff"></circle>
+      <circle cx="26" cy="30" r="6" fill="#8fb9ff"></circle>
+      <circle cx="74" cy="34" r="6" fill="#8fb9ff"></circle>
+      <circle cx="30" cy="72" r="6" fill="#8fb9ff"></circle>
+      <circle cx="70" cy="70" r="6" fill="#ec7f3d"></circle>
+    </svg></div>
   <div id="__bundler_loading">Unpacking...</div>
 
   <script>
-    
-document.addEventListener('DOMContentLoaded', async function() {
-  const loading = document.getElementById('__bundler_loading');
-  function setStatus(msg) { if (loading) loading.textContent = msg; }
 
-  const FONT_MIME = /^(font[/]|application[/](x-)?font-|application[/]vnd\.ms-fontobject)/i;
-  const MIME_TOKEN = /^[\w.+-]+[/][\w.+-]+$/;
-  function toBase64(bytes) {
-    let bin = '';
-    for (let i = 0; i < bytes.length; i += 0x8000) {
-      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-    }
-    return btoa(bin);
-  }
+    document.addEventListener('DOMContentLoaded', async function () {
+      const loading = document.getElementById('__bundler_loading');
+      function setStatus(msg) { if (loading) loading.textContent = msg; }
 
-  // Error sink persists across replaceWith since it's on window, not the DOM.
-  window.addEventListener('error', function(e) {
-    // Failed resource loads (CSP-blocked links, scripts, images) fire plain
-    // events at the element — warn only; real JS errors carry message/error.
-    if (!e.message && !e.error && e.target && e.target !== window) {
-      console.warn('[bundle] resource failed to load:',
-        e.target.tagName, String(e.target.src || e.target.href || ''));
-      return;
-    }
-    var p = document.body || document.documentElement;
-    var d = document.getElementById('__bundler_err') || p.appendChild(document.createElement('div'));
-    d.id = '__bundler_err';
-    d.style.cssText = 'position:fixed;bottom:12px;left:12px;right:12px;font:12px/1.4 ui-monospace,monospace;background:#2a1215;color:#ff8a80;padding:10px 14px;border-radius:8px;border:1px solid #5c2b2e;z-index:99999;white-space:pre-wrap;max-height:40vh;overflow:auto';
-    d.textContent = (d.textContent ? d.textContent + String.fromCharCode(10) : '') +
-      '[bundle] ' + (e.message || e.type) +
-      (e.filename ? ' (' + e.filename.slice(0, 60) + ':' + e.lineno + ')' : '');
-  }, true);
-
-  try {
-    const manifestEl = document.querySelector('script[type="__bundler/manifest"]');
-    const templateEl = document.querySelector('script[type="__bundler/template"]');
-    if (!manifestEl || !templateEl) {
-      setStatus('Error: missing bundle data');
-      console.error('[bundler] Missing script tags — manifestEl:', !!manifestEl, 'templateEl:', !!templateEl);
-      return;
-    }
-
-    const manifest = JSON.parse(manifestEl.textContent);
-    let template = JSON.parse(templateEl.textContent);
-
-    // Nested page bundles (iframe targets). Each ships ONCE, in the ROOT
-    // document's manifest; frame srcs carry an about:blank#<uuid> marker
-    // instead of a substitutable uuid. Every document mints the blobs for
-    // its OWN frames — from local text at the root, or text obtained from
-    // its DIRECT parent over the relay protocol below — so each frame
-    // navigation stays same-origin with its initiator and a deduped page
-    // loads at any depth on any host, including a file:// download's
-    // opaque origins (where a blob minted by one document cannot be
-    // navigated to by another).
-    const pageOrderEl = document.querySelector('script[type="__bundler/page_order"]');
-    const pageOrder = pageOrderEl ? JSON.parse(pageOrderEl.textContent) : [];
-    const pageSet = new Set(pageOrder);
-    const pageTexts = {};
-
-    // ── Nested-page text protocol (parent-chain relay) ──
-    // Page bundles ship once, in the ROOT document's manifest. Every
-    // document mints the blobs for its OWN frames, obtaining page text
-    // through a strict parent-chain relay: a document only ever SENDS to
-    // its direct parent (which, for every document the publisher's own
-    // runtime minted, is another publisher document) and only ACCEPTS
-    // text from that direct parent; requests from below are honored only
-    // for the document's own child frames, and the ROOT never sends
-    // upward at all. That last rule is load-bearing: the artifact host's
-    // frame-ancestors allows claude.ai (and friends) to frame an
-    // artifact, so window.top can be a FOREIGN document — a top-addressed
-    // protocol would hand page uuids to that ancestor and accept forged
-    // "page text" from it, minting attacker HTML as an artifact-origin
-    // blob document. The chain never touches the ancestor: requests stop
-    // at the root, replies are origin-addressed per hop (never '*' when
-    // an origin exists), and both directions are origin-gated (on https
-    // a foreign sender's origin can never equal this document's; in
-    // opaque contexts — file:// — everything serializes as 'null', where
-    // an embedded EXTERNAL frame still fails the gate by carrying its
-    // own real origin, and a sandboxed child of such a frame is excluded
-    // by the own-child-frames check plus uuid unguessability). Shape is
-    // deny-by-default: one request form, one reply form, no error
-    // replies.
-    // window.origin is the SERIALIZED SECURITY origin ('null' in opaque
-    // contexts such as a sandboxed preview iframe) — location.origin is
-    // computed from the URL and stays 'https://…' even when the document
-    // is sandboxed, which would misgate every opaque chain.
-    const OWN_TARGET = /^https?:[/][/]/.test(window.origin || '')
-      ? window.origin
-      : '*';
-    function trustedOrigin(e) {
-      if (e.origin === window.origin) return true; // https chains; opaque==opaque
-      // file:// trees: Chrome serializes the file document's origin as
-      // 'file://' while the blob: documents it mints serialize as 'null',
-      // so the two legitimate shapes can never string-match — accept the
-      // pair in both directions. https origins never serialize as either,
-      // and sender identity (own child frame / direct parent) is checked
-      // separately.
-      return (
-        (e.origin === 'null' &&
-          (window.origin === 'file://' ||
-            window.location.protocol === 'file:')) ||
-        (/^file:/.test(e.origin) && window.origin === 'null')
-      );
-    }
-    // Non-empty only in the root document (nested bundles ship an empty
-    // island), so it doubles as the root marker: the root answers from
-    // local text and treats a miss as authoritative — never relaying to
-    // its (possibly foreign) parent.
-    const isPageRoot = pageOrder.length > 0;
-    const blobUrls = {};
-    const resourceBlobs = {};
-    const UUID_SHAPE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-    const pendingFrames = {}; // uuid -> [{el, frag}] awaiting text for own frames
-    const pendingRelays = {}; // uuid -> [childWindow] awaiting text to pass down
-    function mountPage(el, frag, text) {
-      const pageBlob = new Blob([text], { type: 'text/html' });
-      const u = URL.createObjectURL(pageBlob);
-      resourceBlobs[u] = pageBlob;
-      el.src = u + frag;
-    }
-    function deliverPage(uuid, text) {
-      const frames = pendingFrames[uuid];
-      delete pendingFrames[uuid];
-      if (frames) for (const f of frames) mountPage(f.el, f.frag, text);
-      const relays = pendingRelays[uuid];
-      delete pendingRelays[uuid];
-      if (relays) {
-        for (const cw of relays) {
-          try { cw.postMessage({ __bundler_page: uuid, __bundler_text: text }, OWN_TARGET); } catch (err) { /* gone */ }
+      const FONT_MIME = /^(font[/]|application[/](x-)?font-|application[/]vnd\.ms-fontobject)/i;
+      const MIME_TOKEN = /^[\w.+-]+[/][\w.+-]+$/;
+      function toBase64(bytes) {
+        let bin = '';
+        for (let i = 0; i < bytes.length; i += 0x8000) {
+          bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
         }
+        return btoa(bin);
       }
-    }
-    function ownFrameWindows() {
-      const out = [];
-      for (const f of Array.from(document.querySelectorAll('iframe'))) {
-        try { if (f.contentWindow) out.push(f.contentWindow); } catch (err) { /* detached */ }
-      }
-      return out;
-    }
-    window.addEventListener('message', function (e) {
-      const d = e.data;
-      if (!d || typeof d !== 'object' || !e.source) return;
-      // Origin gate first; the structural checks below (own-child-frames
-      // for requests, direct-parent + solicited-uuid for replies, the
-      // root's never-relay rule) are what hold in fully opaque chains
-      // where origin strings can't discriminate — a sandboxed root's
-      // FOREIGN wrapper still fails all three even though both serialize
-      // as real-vs-'null' rather than matching.
-      if (!trustedOrigin(e)) return;
-      if (typeof d.__bundler_need === 'string' && UUID_SHAPE.test(d.__bundler_need)) {
-        // Requests are honored only for this document's own child frames.
-        if (ownFrameWindows().indexOf(e.source) < 0) return;
-        const uuid = d.__bundler_need;
-        const text = pageTexts[uuid];
-        if (typeof text === 'string') {
-          try { e.source.postMessage({ __bundler_page: uuid, __bundler_text: text }, OWN_TARGET); } catch (err) { /* gone */ }
+
+      // Error sink persists across replaceWith since it's on window, not the DOM.
+      window.addEventListener('error', function (e) {
+        // Failed resource loads (CSP-blocked links, scripts, images) fire plain
+        // events at the element — warn only; real JS errors carry message/error.
+        if (!e.message && !e.error && e.target && e.target !== window) {
+          console.warn('[bundle] resource failed to load:',
+            e.target.tagName, String(e.target.src || e.target.href || ''));
           return;
         }
-        if (isPageRoot || window.parent === window) return; // authoritative miss
-        const waiting = pendingRelays[uuid];
-        if (waiting) {
-          if (waiting.indexOf(e.source) < 0) waiting.push(e.source);
-          return;
-        }
-        // Never-answered uuids would otherwise accumulate forever under a
-        // request spray; past the cap (far above any real page count) new
-        // relays are dropped rather than remembered.
-        if (Object.keys(pendingRelays).length >= 128) return;
-        pendingRelays[uuid] = [e.source];
-        window.parent.postMessage({ __bundler_need: uuid }, OWN_TARGET);
-      } else if (
-        typeof d.__bundler_page === 'string' &&
-        UUID_SHAPE.test(d.__bundler_page) &&
-        typeof d.__bundler_text === 'string'
-      ) {
-        // The shape test is load-bearing beyond tidiness: the solicited
-        // check below uses the in operator, which matches prototype keys
-        // ('__proto__', 'constructor') — an unshaped key would reach
-        // deliverPage and throw, painting the error banner.
-        // Text is accepted only from the direct parent — the document
-        // that minted this one.
-        if (e.source !== window.parent || window.parent === window) return;
-        if (!(d.__bundler_page in pendingFrames) && !(d.__bundler_page in pendingRelays)) return;
-        deliverPage(d.__bundler_page, d.__bundler_text);
-      }
-    });
+        var p = document.body || document.documentElement;
+        var d = document.getElementById('__bundler_err') || p.appendChild(document.createElement('div'));
+        d.id = '__bundler_err';
+        d.style.cssText = 'position:fixed;bottom:12px;left:12px;right:12px;font:12px/1.4 ui-monospace,monospace;background:#2a1215;color:#ff8a80;padding:10px 14px;border-radius:8px;border:1px solid #5c2b2e;z-index:99999;white-space:pre-wrap;max-height:40vh;overflow:auto';
+        d.textContent = (d.textContent ? d.textContent + String.fromCharCode(10) : '') +
+          '[bundle] ' + (e.message || e.type) +
+          (e.filename ? ' (' + e.filename.slice(0, 60) + ':' + e.lineno + ')' : '');
+      }, true);
 
-    const uuids = Object.keys(manifest);
-    setStatus('Unpacking ' + uuids.length + ' assets...');
-
-    await Promise.all(uuids.map(async (uuid) => {
-      const entry = manifest[uuid];
       try {
-        const binaryStr = atob(entry.data);
-        const bytes = new Uint8Array(binaryStr.length);
-        for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
+        const manifestEl = document.querySelector('script[type="__bundler/manifest"]');
+        const templateEl = document.querySelector('script[type="__bundler/template"]');
+        if (!manifestEl || !templateEl) {
+          setStatus('Error: missing bundle data');
+          console.error('[bundler] Missing script tags — manifestEl:', !!manifestEl, 'templateEl:', !!templateEl);
+          return;
+        }
 
-        let finalBytes = bytes;
-        if (entry.compressed) {
-          if (typeof DecompressionStream !== 'undefined') {
-            const ds = new DecompressionStream('gzip');
-            const writer = ds.writable.getWriter();
-            const reader = ds.readable.getReader();
-            writer.write(bytes);
-            writer.close();
-            const chunks = [];
-            let totalLen = 0;
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              chunks.push(value);
-              totalLen += value.length;
+        const manifest = JSON.parse(manifestEl.textContent);
+        let template = JSON.parse(templateEl.textContent);
+
+        // Nested page bundles (iframe targets). Each ships ONCE, in the ROOT
+        // document's manifest; frame srcs carry an about:blank#<uuid> marker
+        // instead of a substitutable uuid. Every document mints the blobs for
+        // its OWN frames — from local text at the root, or text obtained from
+        // its DIRECT parent over the relay protocol below — so each frame
+        // navigation stays same-origin with its initiator and a deduped page
+        // loads at any depth on any host, including a file:// download's
+        // opaque origins (where a blob minted by one document cannot be
+        // navigated to by another).
+        const pageOrderEl = document.querySelector('script[type="__bundler/page_order"]');
+        const pageOrder = pageOrderEl ? JSON.parse(pageOrderEl.textContent) : [];
+        const pageSet = new Set(pageOrder);
+        const pageTexts = {};
+
+        // ── Nested-page text protocol (parent-chain relay) ──
+        // Page bundles ship once, in the ROOT document's manifest. Every
+        // document mints the blobs for its OWN frames, obtaining page text
+        // through a strict parent-chain relay: a document only ever SENDS to
+        // its direct parent (which, for every document the publisher's own
+        // runtime minted, is another publisher document) and only ACCEPTS
+        // text from that direct parent; requests from below are honored only
+        // for the document's own child frames, and the ROOT never sends
+        // upward at all. That last rule is load-bearing: the artifact host's
+        // frame-ancestors allows claude.ai (and friends) to frame an
+        // artifact, so window.top can be a FOREIGN document — a top-addressed
+        // protocol would hand page uuids to that ancestor and accept forged
+        // "page text" from it, minting attacker HTML as an artifact-origin
+        // blob document. The chain never touches the ancestor: requests stop
+        // at the root, replies are origin-addressed per hop (never '*' when
+        // an origin exists), and both directions are origin-gated (on https
+        // a foreign sender's origin can never equal this document's; in
+        // opaque contexts — file:// — everything serializes as 'null', where
+        // an embedded EXTERNAL frame still fails the gate by carrying its
+        // own real origin, and a sandboxed child of such a frame is excluded
+        // by the own-child-frames check plus uuid unguessability). Shape is
+        // deny-by-default: one request form, one reply form, no error
+        // replies.
+        // window.origin is the SERIALIZED SECURITY origin ('null' in opaque
+        // contexts such as a sandboxed preview iframe) — location.origin is
+        // computed from the URL and stays 'https://…' even when the document
+        // is sandboxed, which would misgate every opaque chain.
+        const OWN_TARGET = /^https?:[/][/]/.test(window.origin || '')
+          ? window.origin
+          : '*';
+        function trustedOrigin(e) {
+          if (e.origin === window.origin) return true; // https chains; opaque==opaque
+          // file:// trees: Chrome serializes the file document's origin as
+          // 'file://' while the blob: documents it mints serialize as 'null',
+          // so the two legitimate shapes can never string-match — accept the
+          // pair in both directions. https origins never serialize as either,
+          // and sender identity (own child frame / direct parent) is checked
+          // separately.
+          return (
+            (e.origin === 'null' &&
+              (window.origin === 'file://' ||
+                window.location.protocol === 'file:')) ||
+            (/^file:/.test(e.origin) && window.origin === 'null')
+          );
+        }
+        // Non-empty only in the root document (nested bundles ship an empty
+        // island), so it doubles as the root marker: the root answers from
+        // local text and treats a miss as authoritative — never relaying to
+        // its (possibly foreign) parent.
+        const isPageRoot = pageOrder.length > 0;
+        const blobUrls = {};
+        const resourceBlobs = {};
+        const UUID_SHAPE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+        const pendingFrames = {}; // uuid -> [{el, frag}] awaiting text for own frames
+        const pendingRelays = {}; // uuid -> [childWindow] awaiting text to pass down
+        function mountPage(el, frag, text) {
+          const pageBlob = new Blob([text], { type: 'text/html' });
+          const u = URL.createObjectURL(pageBlob);
+          resourceBlobs[u] = pageBlob;
+          el.src = u + frag;
+        }
+        function deliverPage(uuid, text) {
+          const frames = pendingFrames[uuid];
+          delete pendingFrames[uuid];
+          if (frames) for (const f of frames) mountPage(f.el, f.frag, text);
+          const relays = pendingRelays[uuid];
+          delete pendingRelays[uuid];
+          if (relays) {
+            for (const cw of relays) {
+              try { cw.postMessage({ __bundler_page: uuid, __bundler_text: text }, OWN_TARGET); } catch (err) { /* gone */ }
             }
-            finalBytes = new Uint8Array(totalLen);
-            let offset = 0;
-            for (const chunk of chunks) { finalBytes.set(chunk, offset); offset += chunk.length; }
-          } else {
-            console.warn('DecompressionStream not available, asset ' + uuid + ' may not render');
+          }
+        }
+        function ownFrameWindows() {
+          const out = [];
+          for (const f of Array.from(document.querySelectorAll('iframe'))) {
+            try { if (f.contentWindow) out.push(f.contentWindow); } catch (err) { /* detached */ }
+          }
+          return out;
+        }
+        window.addEventListener('message', function (e) {
+          const d = e.data;
+          if (!d || typeof d !== 'object' || !e.source) return;
+          // Origin gate first; the structural checks below (own-child-frames
+          // for requests, direct-parent + solicited-uuid for replies, the
+          // root's never-relay rule) are what hold in fully opaque chains
+          // where origin strings can't discriminate — a sandboxed root's
+          // FOREIGN wrapper still fails all three even though both serialize
+          // as real-vs-'null' rather than matching.
+          if (!trustedOrigin(e)) return;
+          if (typeof d.__bundler_need === 'string' && UUID_SHAPE.test(d.__bundler_need)) {
+            // Requests are honored only for this document's own child frames.
+            if (ownFrameWindows().indexOf(e.source) < 0) return;
+            const uuid = d.__bundler_need;
+            const text = pageTexts[uuid];
+            if (typeof text === 'string') {
+              try { e.source.postMessage({ __bundler_page: uuid, __bundler_text: text }, OWN_TARGET); } catch (err) { /* gone */ }
+              return;
+            }
+            if (isPageRoot || window.parent === window) return; // authoritative miss
+            const waiting = pendingRelays[uuid];
+            if (waiting) {
+              if (waiting.indexOf(e.source) < 0) waiting.push(e.source);
+              return;
+            }
+            // Never-answered uuids would otherwise accumulate forever under a
+            // request spray; past the cap (far above any real page count) new
+            // relays are dropped rather than remembered.
+            if (Object.keys(pendingRelays).length >= 128) return;
+            pendingRelays[uuid] = [e.source];
+            window.parent.postMessage({ __bundler_need: uuid }, OWN_TARGET);
+          } else if (
+            typeof d.__bundler_page === 'string' &&
+            UUID_SHAPE.test(d.__bundler_page) &&
+            typeof d.__bundler_text === 'string'
+          ) {
+            // The shape test is load-bearing beyond tidiness: the solicited
+            // check below uses the in operator, which matches prototype keys
+            // ('__proto__', 'constructor') — an unshaped key would reach
+            // deliverPage and throw, painting the error banner.
+            // Text is accepted only from the direct parent — the document
+            // that minted this one.
+            if (e.source !== window.parent || window.parent === window) return;
+            if (!(d.__bundler_page in pendingFrames) && !(d.__bundler_page in pendingRelays)) return;
+            deliverPage(d.__bundler_page, d.__bundler_text);
+          }
+        });
+
+        const uuids = Object.keys(manifest);
+        setStatus('Unpacking ' + uuids.length + ' assets...');
+
+        await Promise.all(uuids.map(async (uuid) => {
+          const entry = manifest[uuid];
+          try {
+            const binaryStr = atob(entry.data);
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
+
+            let finalBytes = bytes;
+            if (entry.compressed) {
+              if (typeof DecompressionStream !== 'undefined') {
+                const ds = new DecompressionStream('gzip');
+                const writer = ds.writable.getWriter();
+                const reader = ds.readable.getReader();
+                writer.write(bytes);
+                writer.close();
+                const chunks = [];
+                let totalLen = 0;
+                while (true) {
+                  const { done, value } = await reader.read();
+                  if (done) break;
+                  chunks.push(value);
+                  totalLen += value.length;
+                }
+                finalBytes = new Uint8Array(totalLen);
+                let offset = 0;
+                for (const chunk of chunks) { finalBytes.set(chunk, offset); offset += chunk.length; }
+              } else {
+                console.warn('DecompressionStream not available, asset ' + uuid + ' may not render');
+              }
+            }
+
+            if (pageSet.has(uuid)) {
+              pageTexts[uuid] = new TextDecoder().decode(finalBytes);
+              return;
+            }
+            if (FONT_MIME.test(entry.mime) && MIME_TOKEN.test(entry.mime)) {
+              // Strict artifact hosts allow font-src data: but not blob:.
+              blobUrls[uuid] = 'data:' + entry.mime + ';base64,' +
+                (entry.compressed ? toBase64(finalBytes) : entry.data);
+            } else {
+              const blob = new Blob([finalBytes], { type: entry.mime });
+              blobUrls[uuid] = URL.createObjectURL(blob);
+              resourceBlobs[blobUrls[uuid]] = blob;
+            }
+          } catch (err) {
+            console.error('Failed to decode asset ' + uuid + ':', err);
+            const blob = new Blob([], { type: entry.mime });
+            blobUrls[uuid] = URL.createObjectURL(blob);
+            resourceBlobs[blobUrls[uuid]] = blob;
+          }
+        }));
+
+        const extResEl = document.querySelector('script[type="__bundler/ext_resources"]');
+        const extResources = extResEl ? JSON.parse(extResEl.textContent) : [];
+        const resourceMap = {};
+        for (const entry of extResources) {
+          if (blobUrls[entry.uuid]) resourceMap[entry.id] = blobUrls[entry.uuid];
+        }
+
+        // Artifact-host CSP (connect-src 'self') refuses fetch() of blob: URLs —
+        // consumers read these Blobs directly. Survives the swap like the error sink.
+        window.__resourceBlobs = resourceBlobs;
+
+        setStatus('Rendering...');
+        // Page uuids have no blob here — they ride inside about:blank#<uuid>
+        // frame markers the pass below resolves after the swap.
+        for (const uuid of uuids) {
+          if (pageSet.has(uuid)) continue;
+          template = template.split(uuid).join(blobUrls[uuid]);
+        }
+
+        // Strip integrity + crossorigin — blob URLs from a file:// document inherit
+        // a null origin, so crossorigin forces a CORS fetch that SRI then rejects.
+        // The manifest bytes are ours; SRI protects against CDN compromise, not this.
+        template = template.replace(/\s+integrity="[^"]*"/gi, '').replace(/\s+crossorigin="[^"]*"/gi, '');
+
+        const resourceScript = '<script>window.__resources = ' +
+          JSON.stringify(resourceMap).replace(/<\//g, '<\\/') +
+          ';</' + 'script>';
+        // Inject after <head> so the DOCTYPE stays first; prepending the script
+        // would push the parser into quirks mode. DOMParser always emits a <head>
+        // (synthesizing one if the source HTML omitted it) but may carry
+        // attributes through, so match the full opening tag. slice() rather than
+        // replace() keeps us clear of $-pattern substitution in resourceScript.
+        const headOpen = template.match(/<head[^>]*>/i);
+        if (headOpen) {
+          const i = headOpen.index + headOpen[0].length;
+          template = template.slice(0, i) + resourceScript + template.slice(i);
+        }
+
+        // Parse the template and swap the root element. Scripts inserted via
+        // DOMParser/replaceWith are inert per spec — re-create each with
+        // createElement so they execute, awaiting onload for src scripts to
+        // preserve ordering (React before ReactDOM before Babel before text/babel).
+        const doc = new DOMParser().parseFromString(template, 'text/html');
+        document.documentElement.replaceWith(doc.documentElement);
+
+        // Resolve page-frame markers: mint this document's own blob for each
+        // framed page — from local text when this is the root, otherwise by
+        // asking the direct parent over the relay protocol above. An
+        // unanswered request leaves the frame on about:blank, the same
+        // degraded state as a refused embed.
+        {
+          const MARKER = /^about:blank#([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(#.*)?$/;
+          const needed = [];
+          for (const el of Array.from(document.querySelectorAll('iframe'))) {
+            const m = MARKER.exec(el.getAttribute('src') || '');
+            if (!m) continue;
+            const text = pageTexts[m[1]];
+            if (typeof text === 'string') {
+              mountPage(el, m[2] || '', text);
+            } else if (window.parent !== window && !isPageRoot) {
+              const had = pendingFrames[m[1]];
+              (pendingFrames[m[1]] = had || []).push({ el: el, frag: m[2] || '' });
+              if (!had) needed.push(m[1]);
+            }
+          }
+          for (const uuid of needed) {
+            window.parent.postMessage({ __bundler_need: uuid }, OWN_TARGET);
           }
         }
 
-        if (pageSet.has(uuid)) {
-          pageTexts[uuid] = new TextDecoder().decode(finalBytes);
-          return;
+        const dead = Array.from(document.scripts);
+        for (const old of dead) {
+          const s = document.createElement('script');
+          for (const a of old.attributes) s.setAttribute(a.name, a.value);
+          s.textContent = old.textContent;
+          // text/babel scripts with a src: read and inline. transformScriptTags
+          // does XHR against the src, but blob:null/ from a file:// origin is
+          // silently dropped. Inlining makes it a plain inline babel script,
+          // which transformScriptTags handles unconditionally.
+          if ((s.type === 'text/babel' || s.type === 'text/jsx') && s.src) {
+            const pre = resourceBlobs[s.src.split('#')[0]];
+            s.textContent = pre ? await pre.text() : await (await fetch(s.src)).text();
+            s.removeAttribute('src');
+          }
+          const p = s.src ? new Promise(function (r) { s.onload = s.onerror = r; }) : null;
+          old.replaceWith(s);
+          if (p) await p;
         }
-        if (FONT_MIME.test(entry.mime) && MIME_TOKEN.test(entry.mime)) {
-          // Strict artifact hosts allow font-src data: but not blob:.
-          blobUrls[uuid] = 'data:' + entry.mime + ';base64,' +
-            (entry.compressed ? toBase64(finalBytes) : entry.data);
-        } else {
-          const blob = new Blob([finalBytes], { type: entry.mime });
-          blobUrls[uuid] = URL.createObjectURL(blob);
-          resourceBlobs[blobUrls[uuid]] = blob;
+        // Babel standalone auto-transforms type=text/babel on DOMContentLoaded,
+        // which fired before we swapped the document. Trigger manually if present.
+        if (window.Babel && typeof window.Babel.transformScriptTags === 'function') {
+          window.Babel.transformScriptTags();
         }
       } catch (err) {
-        console.error('Failed to decode asset ' + uuid + ':', err);
-        const blob = new Blob([], { type: entry.mime });
-        blobUrls[uuid] = URL.createObjectURL(blob);
-        resourceBlobs[blobUrls[uuid]] = blob;
+        setStatus('Error unpacking: ' + err.message);
+        console.error('Bundle unpack error:', err);
       }
-    }));
-
-    const extResEl = document.querySelector('script[type="__bundler/ext_resources"]');
-    const extResources = extResEl ? JSON.parse(extResEl.textContent) : [];
-    const resourceMap = {};
-    for (const entry of extResources) {
-      if (blobUrls[entry.uuid]) resourceMap[entry.id] = blobUrls[entry.uuid];
-    }
-
-    // Artifact-host CSP (connect-src 'self') refuses fetch() of blob: URLs —
-    // consumers read these Blobs directly. Survives the swap like the error sink.
-    window.__resourceBlobs = resourceBlobs;
-
-    setStatus('Rendering...');
-    // Page uuids have no blob here — they ride inside about:blank#<uuid>
-    // frame markers the pass below resolves after the swap.
-    for (const uuid of uuids) {
-      if (pageSet.has(uuid)) continue;
-      template = template.split(uuid).join(blobUrls[uuid]);
-    }
-
-    // Strip integrity + crossorigin — blob URLs from a file:// document inherit
-    // a null origin, so crossorigin forces a CORS fetch that SRI then rejects.
-    // The manifest bytes are ours; SRI protects against CDN compromise, not this.
-    template = template.replace(/\s+integrity="[^"]*"/gi, '').replace(/\s+crossorigin="[^"]*"/gi, '');
-
-    const resourceScript = '<script>window.__resources = ' +
-      JSON.stringify(resourceMap).replace(/<\//g, '<\\/') +
-      ';</' + 'script>';
-    // Inject after <head> so the DOCTYPE stays first; prepending the script
-    // would push the parser into quirks mode. DOMParser always emits a <head>
-    // (synthesizing one if the source HTML omitted it) but may carry
-    // attributes through, so match the full opening tag. slice() rather than
-    // replace() keeps us clear of $-pattern substitution in resourceScript.
-    const headOpen = template.match(/<head[^>]*>/i);
-    if (headOpen) {
-      const i = headOpen.index + headOpen[0].length;
-      template = template.slice(0, i) + resourceScript + template.slice(i);
-    }
-
-    // Parse the template and swap the root element. Scripts inserted via
-    // DOMParser/replaceWith are inert per spec — re-create each with
-    // createElement so they execute, awaiting onload for src scripts to
-    // preserve ordering (React before ReactDOM before Babel before text/babel).
-    const doc = new DOMParser().parseFromString(template, 'text/html');
-    document.documentElement.replaceWith(doc.documentElement);
-
-    // Resolve page-frame markers: mint this document's own blob for each
-    // framed page — from local text when this is the root, otherwise by
-    // asking the direct parent over the relay protocol above. An
-    // unanswered request leaves the frame on about:blank, the same
-    // degraded state as a refused embed.
-    {
-      const MARKER = /^about:blank#([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(#.*)?$/;
-      const needed = [];
-      for (const el of Array.from(document.querySelectorAll('iframe'))) {
-        const m = MARKER.exec(el.getAttribute('src') || '');
-        if (!m) continue;
-        const text = pageTexts[m[1]];
-        if (typeof text === 'string') {
-          mountPage(el, m[2] || '', text);
-        } else if (window.parent !== window && !isPageRoot) {
-          const had = pendingFrames[m[1]];
-          (pendingFrames[m[1]] = had || []).push({ el: el, frag: m[2] || '' });
-          if (!had) needed.push(m[1]);
-        }
-      }
-      for (const uuid of needed) {
-        window.parent.postMessage({ __bundler_need: uuid }, OWN_TARGET);
-      }
-    }
-
-    const dead = Array.from(document.scripts);
-    for (const old of dead) {
-      const s = document.createElement('script');
-      for (const a of old.attributes) s.setAttribute(a.name, a.value);
-      s.textContent = old.textContent;
-      // text/babel scripts with a src: read and inline. transformScriptTags
-      // does XHR against the src, but blob:null/ from a file:// origin is
-      // silently dropped. Inlining makes it a plain inline babel script,
-      // which transformScriptTags handles unconditionally.
-      if ((s.type === 'text/babel' || s.type === 'text/jsx') && s.src) {
-        const pre = resourceBlobs[s.src.split('#')[0]];
-        s.textContent = pre ? await pre.text() : await (await fetch(s.src)).text();
-        s.removeAttribute('src');
-      }
-      const p = s.src ? new Promise(function(r) { s.onload = s.onerror = r; }) : null;
-      old.replaceWith(s);
-      if (p) await p;
-    }
-    // Babel standalone auto-transforms type=text/babel on DOMContentLoaded,
-    // which fired before we swapped the document. Trigger manually if present.
-    if (window.Babel && typeof window.Babel.transformScriptTags === 'function') {
-      window.Babel.transformScriptTags();
-    }
-  } catch (err) {
-    setStatus('Error unpacking: ' + err.message);
-    console.error('Bundle unpack error:', err);
-  }
-});
+    });
 
   </script>
 
@@ -379,7 +437,8 @@ document.addEventListener('DOMContentLoaded', async function() {
   </script>
 
   <script type="__bundler/template">
-"<!DOCTYPE html>\n<html><head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<script src=\"e8724ed9-96bc-44a7-8eab-b8113c4e8bc2\"><\u002Fscript>\n<\u002Fhead>\n<body>\n\n<x-dc>\n<helmet>\n<style>/* latin-ext */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(\"2b64b86e-dacf-47e9-a3e6-5c6b2eae8833\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(\"ca6573a7-8b3e-47b0-b8ce-689409c06ab8\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"2b64b86e-dacf-47e9-a3e6-5c6b2eae8833\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"ca6573a7-8b3e-47b0-b8ce-689409c06ab8\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"2b64b86e-dacf-47e9-a3e6-5c6b2eae8833\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"ca6573a7-8b3e-47b0-b8ce-689409c06ab8\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 700;\n  font-display: swap;\n  src: url(\"2b64b86e-dacf-47e9-a3e6-5c6b2eae8833\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 700;\n  font-display: swap;\n  src: url(\"ca6573a7-8b3e-47b0-b8ce-689409c06ab8\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 800;\n  font-display: swap;\n  src: url(\"2b64b86e-dacf-47e9-a3e6-5c6b2eae8833\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 800;\n  font-display: swap;\n  src: url(\"ca6573a7-8b3e-47b0-b8ce-689409c06ab8\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n<\u002Fstyle>\n<style>\n  body { margin:0; background:#f5f6f8; font-family:'Outfit',sans-serif; }\n  a { color:#1d4af3; text-decoration:none; }\n  a:hover { color:#1535e0; }\n  * { box-sizing:border-box; }\n<\u002Fstyle>\n<\u002Fhelmet>\n\n<section style=\"min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;background:#f5f6f8;\">\n  <div style=\"display:flex;justify-content:center;align-items:center;width:100%;\">\n\n    <div ref=\"{{ stageRef }}\" style=\"position:relative;width:664px;height:512px;\">\n     <div style=\"position:absolute;left:0;top:0;width:664px;height:512px;\">\n\n      <div style=\"position:absolute;left:30px;top:0;width:400px;height:400px;\">\n        <div ref=\"{{ ring1Ref }}\" style=\"position:absolute;inset:0;border-radius:50%;border:1px solid #e6e7ed;\"><\u002Fdiv>\n        <div ref=\"{{ ring2Ref }}\" style=\"position:absolute;inset:22%;border-radius:50%;border:1px solid #edeef2;\"><\u002Fdiv>\n        <div ref=\"{{ pingRef }}\" style=\"position:absolute;inset:0;border-radius:50%;border:1px solid #f3cdb2;opacity:0;\"><\u002Fdiv>\n        <div ref=\"{{ sweepRef }}\" style=\"position:absolute;inset:0;border-radius:50%;opacity:0;will-change:transform,opacity;background:conic-gradient(rgba(236,127,61,0.16) 0deg,rgba(236,127,61,0.05) 32deg,transparent 64deg,transparent 360deg);\"><\u002Fdiv>\n\n        <svg sc-camel-view-box=\"0 0 400 400\" style=\"position:absolute;inset:0;width:100%;height:100%;overflow:visible;\">\n          <sc-for list=\"{{ links }}\" as=\"l\" hint-placeholder-count=\"7\">\n            <line ref=\"{{ l.ref }}\" x1=\"200\" y1=\"200\" x2=\"200\" y2=\"200\" stroke=\"#b9bdd0\" stroke-width=\"1.4\" stroke-linecap=\"round\" opacity=\"0\"><\u002Fline>\n          <\u002Fsc-for>\n          <sc-for list=\"{{ links }}\" as=\"l\" hint-placeholder-count=\"7\">\n            <line ref=\"{{ l.lightRef }}\" x1=\"200\" y1=\"200\" x2=\"200\" y2=\"200\" stroke=\"#1d4af3\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-dasharray=\"7 44\" opacity=\"0\"><\u002Fline>\n          <\u002Fsc-for>\n        <\u002Fsvg>\n\n        <div style=\"position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;\">\n          <div ref=\"{{ haloRef }}\" style=\"position:absolute;inset:0;border-radius:50%;background:rgba(236,127,61,0.35);opacity:0;\"><\u002Fdiv>\n          <div ref=\"{{ coreRef }}\" style=\"position:absolute;inset:0;border-radius:50%;background:#141d57;display:flex;align-items:center;justify-content:center;padding:9px;will-change:transform,background;\">\n            <span ref=\"{{ coreLabelRef }}\" style=\"position:absolute;left:8px;right:8px;font-size:10.5px;font-weight:700;color:#ffffff;text-align:center;line-height:1.25;text-wrap:pretty;opacity:0;\">Formateur<\u002Fspan>\n            <span ref=\"{{ coreWarnRef }}\" style=\"position:absolute;display:flex;opacity:0;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:30px;height:30px;color:#ec7f3d;\"><path d=\"M12 4 2.5 20h19L12 4Z M12 10v4 M12 17.5h.01\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n            <span ref=\"{{ coreTargetRef }}\" style=\"position:absolute;display:flex;align-items:center;justify-content:center;inset:0;opacity:0;\">\n              <sc-for list=\"{{ coreIllus }}\" as=\"ci\" hint-placeholder-count=\"5\">\n                <img ref=\"{{ ci.ref }}\" alt=\"\" style=\"position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;object-fit:contain;opacity:0;\">\n              <\u002Fsc-for>\n            <\u002Fspan>\n          <\u002Fdiv>\n        <\u002Fdiv>\n\n        <sc-for list=\"{{ nodes }}\" as=\"n\" hint-placeholder-count=\"7\">\n          <div ref=\"{{ n.ref }}\" style=\"position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;opacity:0;will-change:transform,opacity;\">\n            <div ref=\"{{ n.circleRef }}\" style=\"position:absolute;inset:0;border-radius:50%;background:#ffffff;border:1px solid #b9bdd0;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(20,29,87,0.06);\">\n              <span ref=\"{{ n.iconARef }}\" style=\"position:absolute;display:flex;color:#141d57;opacity:0;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:23px;height:23px;\"><path d=\"{{ n.iconA }}\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n              <span ref=\"{{ n.iconBRef }}\" style=\"position:absolute;display:flex;color:#ec7f3d;opacity:0;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:23px;height:23px;\"><path d=\"{{ n.iconB }}\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n              <span ref=\"{{ n.iconCRef }}\" style=\"position:absolute;display:flex;color:#8fb9ff;opacity:0;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:23px;height:23px;\"><path d=\"{{ n.iconC }}\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n            <\u002Fdiv>\n            <div ref=\"{{ n.labelRef }}\" style=\"position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:8px;font-size:11px;font-weight:700;color:#141d57;white-space:nowrap;opacity:0;\">{{ n.labelC }}<\u002Fdiv>\n          <\u002Fdiv>\n        <\u002Fsc-for>\n      <\u002Fdiv>\n\n      <div style=\"position:absolute;right:0;top:132px;width:216px;display:flex;flex-direction:column;gap:6px;align-items:flex-end;\">\n        <sc-for list=\"{{ scanPopups }}\" as=\"p\" hint-placeholder-count=\"6\">\n          <div ref=\"{{ p.ref }}\" style=\"opacity:0;background:#ffffff;border:1px solid #dfe0e6;border-radius:10px;padding:9px 13px;display:flex;align-items:center;gap:9px;width:100%;box-shadow:0 6px 16px rgba(20,29,87,0.07);\">\n            <svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:15px;height:15px;color:#78778b;flex-shrink:0;\"><path d=\"{{ p.icon }}\"><\u002Fpath><\u002Fsvg>\n            <span style=\"font-size:12px;font-weight:600;color:#141d57;white-space:nowrap;\">{{ p.label }}<\u002Fspan>\n            <span ref=\"{{ p.warnRef }}\" style=\"margin-left:auto;display:flex;flex-shrink:0;opacity:0;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:15px;height:15px;color:#ec7f3d;\"><path d=\"M12 4 2.5 20h19L12 4Z M12 10v4 M12 17.5h.01\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n          <\u002Fdiv>\n        <\u002Fsc-for>\n      <\u002Fdiv>\n\n      <div ref=\"{{ rolesCardRef }}\" style=\"position:absolute;right:0;top:128px;width:220px;opacity:0;background:#ffffff;border:1px solid #dfe0e6;border-radius:14px;padding:15px 17px;box-shadow:0 10px 26px rgba(20,29,87,0.08);\">\n        <div style=\"font-size:10.5px;font-weight:700;color:#8c8aa1;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:12px;\">Les acteurs réunis<\u002Fdiv>\n        <div style=\"display:flex;flex-direction:column;gap:10px;\">\n          <sc-for list=\"{{ roleList }}\" as=\"r\" hint-placeholder-count=\"7\">\n            <div ref=\"{{ r.ref }}\" style=\"opacity:0;display:flex;align-items:center;gap:10px;\">\n              <span style=\"display:flex;color:#141d57;flex-shrink:0;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:15px;height:15px;\"><path d=\"{{ r.icon }}\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n              <span style=\"font-size:12px;font-weight:600;color:#141d57;white-space:nowrap;\">{{ r.label }}<\u002Fspan>\n            <\u002Fdiv>\n          <\u002Fsc-for>\n        <\u002Fdiv>\n      <\u002Fdiv>\n\n      <div ref=\"{{ resultWrapRef }}\" style=\"position:absolute;right:0;top:174px;width:266px;display:flex;flex-direction:column;gap:11px;opacity:0;\">\n        <sc-for list=\"{{ resultChips }}\" as=\"r\" hint-placeholder-count=\"3\">\n          <div ref=\"{{ r.ref }}\" style=\"opacity:0;background:#ffffff;border:1px solid #e6e7ed;border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:12px;\">\n            <span ref=\"{{ r.tileRef }}\" style=\"display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:rgba(29,74,243,0.10);flex-shrink:0;color:#1d4af3;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:18px;height:18px;\"><path d=\"{{ r.icon }}\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n            <span style=\"display:flex;flex-direction:column;gap:3px;min-width:0;\">\n              <span style=\"font-size:12.5px;font-weight:700;color:#141d57;\">{{ r.label }}<\u002Fspan>\n              <span style=\"font-size:10.5px;font-weight:500;color:#78778b;line-height:1.35;text-wrap:pretty;\">{{ r.sub }}<\u002Fspan>\n            <\u002Fspan>\n          <\u002Fdiv>\n        <\u002Fsc-for>\n      <\u002Fdiv>\n\n      <div style=\"position:absolute;left:30px;top:424px;width:400px;\">\n        <div style=\"display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;\">\n          <sc-for list=\"{{ chips }}\" as=\"c\" hint-placeholder-count=\"4\">\n            <div ref=\"{{ c.ref }}\" style=\"opacity:0;color:#141d57;background:#ffffff;border:1px solid #dfe0e6;border-radius:10px;padding:10px 13px;display:flex;align-items:center;gap:9px;min-width:0;\">\n              <svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:15px;height:15px;flex-shrink:0;\"><path d=\"{{ c.icon }}\"><\u002Fpath><\u002Fsvg>\n              <span ref=\"{{ c.textRef }}\" style=\"font-size:12px;font-weight:600;color:#141d57;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;\">{{ c.label }}<\u002Fspan>\n            <\u002Fdiv>\n          <\u002Fsc-for>\n        <\u002Fdiv>\n\n        <div ref=\"{{ gaugeRef }}\" style=\"position:absolute;left:0;top:2px;width:100%;opacity:0;\">\n          <div style=\"display:grid;grid-template-columns:24px minmax(0,1fr) 24px;gap:11px;align-items:flex-end;margin-bottom:9px;\">\n            <span><\u002Fspan>\n            <div style=\"display:flex;align-items:flex-end;justify-content:space-between;gap:16px;\">\n              <div style=\"font-size:10.5px;font-weight:600;color:#8c8aa1;letter-spacing:0.5px;text-transform:uppercase;\">Temps pour accompagner<\u002Fdiv>\n              <div style=\"font-size:10.5px;font-weight:600;color:#8c8aa1;letter-spacing:0.5px;text-transform:uppercase;text-align:right;\">Absorbé par l'administratif<\u002Fdiv>\n            <\u002Fdiv>\n            <span><\u002Fspan>\n          <\u002Fdiv>\n          <div style=\"display:grid;grid-template-columns:24px minmax(0,1fr) 24px;gap:11px;align-items:center;\">\n            <span style=\"display:flex;align-items:center;justify-content:center;color:#8c8aa1;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:20px;height:20px;\"><path d=\"M16 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20 M9 10.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z M22 20v-1.5a4 4 0 0 0-3-3.9 M16 3.6a4 4 0 0 1 0 7\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n            <div style=\"position:relative;height:30px;border-radius:999px;background:#ec7f3d;overflow:hidden;display:flex;align-items:center;\">\n              <div ref=\"{{ gaugeFillRef }}\" style=\"position:absolute;left:0;top:0;bottom:0;width:90%;background:#1d4af3;border-right:2px solid #ffffff;transition:width 0.6s cubic-bezier(.22,1,.36,1);\"><\u002Fdiv>\n              <span ref=\"{{ gaugeValRef }}\" style=\"position:relative;margin-left:14px;font-size:13px;font-weight:800;color:#ffffff;\">90 %<\u002Fspan>\n              <span ref=\"{{ gaugeLostRef }}\" style=\"position:relative;margin-left:auto;margin-right:14px;font-size:13px;font-weight:800;color:#ffffff;\">10 %<\u002Fspan>\n            <\u002Fdiv>\n            <span style=\"display:flex;align-items:center;justify-content:center;color:#8c8aa1;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:20px;height:20px;\"><path d=\"M11 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6 M17.5 3.5a2.1 2.1 0 0 1 3 3L13 14l-4 1 1-4 7.5-7.5Z\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n          <\u002Fdiv>\n        <\u002Fdiv>\n\n        <div ref=\"{{ titleRef }}\" style=\"position:absolute;left:0;top:0;width:100%;opacity:0;display:flex;justify-content:center;\">\n          <span style=\"font-size:46px;font-weight:800;letter-spacing:-1.4px;color:#141d57;line-height:1;\">SkailUp<\u002Fspan>\n        <\u002Fdiv>\n      <\u002Fdiv>\n\n     <\u002Fdiv>\n    <\u002Fdiv>\n  <\u002Fdiv>\n<\u002Fsection>\n\n<\u002Fx-dc>\n<script type=\"text/x-dc\" data-dc-script=\"\" data-props=\"{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:820}}\">\nconst SPEED = 1.12;\nconst NO_SCALE = { beam0: 1, ringR: 1 };\n// n'écrire dans le DOM que ce qui change vraiment\nconst setS = (n, k, v) => { if (!n) return; const c = n.__s || (n.__s = {}); if (c[k] !== v) { c[k] = v; n.style[k] = v; } };\nconst setA = (n, k, v) => { if (!n) return; const c = n.__a || (n.__a = {}); if (c[k] !== v) { c[k] = v; n.setAttribute(k, v); } };\nconst stretch = o => { const r = {}; for (const k in o) r[k] = NO_SCALE[k] ? o[k] : Math.round(o[k] * SPEED); return r; };\n\nconst T = stretch({\n  // ACTE 1 — sonar : on détecte la charge administrative\n  sweepStart: 400, sweepTurn: 6000, beam0: -14,\n  gaugeIn: 2400,\n  warnLag: 6000, warnDur: 320,\n  t12: 13000, t12Dur: 1400,\n  // ACTE 2 — les acteurs, l'orbite, le regroupement, puis les liens\n  listIn: 14400, listOut: 19400,\n  roleStart: 14700, roleStep: 620,\n  chipStart: 20000, chipStep: 400,\n  spinStart: 22000, spinDur: 5200,\n  bubbleOrange: 22200, bubbleOrangeStep: 320,\n  chipOrange: 25000, chipOrangeStep: 340,\n  stopT: 27200,\n  blueStart: 27500, blueStep: 320,\n  regroupAt: 30100, regroupDur: 1200, ringR: 122,\n  linkStart: 31500, linkStagger: 210, linkDraw: 560,\n  chipBlue: 33700, chipBlueStep: 360,\n  t23: 36000,\n  // ACTE 3 — une bulle, un lien, un flux… puis les bénéfices\n  a3Start: 37400, a3Step: 1350, a3LinkLag: 250, a3LinkDraw: 620, a3LightLag: 900,\n  illuStart: 37600, illuStep: 1350,\n  resultStart: 44600, resultStep: 1050,\n  // les cercles deviennent le logo, le titre s'écrit, puis tout s'efface sauf le noyau\n  wipe: 48000, logoDur: 900, titleIn: 49400, titleOut: 52400, erase: 52400, loop: 54000,\n});\n\nconst SLOTS = [\n  { a1: { ring: 'outer', idx: 0, label: 'Formateur' }, icA: 'graduation-cap',\n    a2: { angle: -90, r: 140 }, icB: 'mail',\n    a3: { angle: -46.4, r: 150, size: 1.40 }, icC: 'users', labelC: 'Présences' },\n  { a1: { ring: 'outer', idx: 1, label: 'Coach' }, icA: 'megaphone',\n    a2: { angle: -30, r: 118 }, icB: 'pen-line',\n    a3: { angle: 134.2, r: 153, size: 1.40 }, icC: 'star', labelC: 'Évaluation' },\n  { a1: { ring: 'outer', idx: 2, label: 'Mentor' }, icA: 'user-check',\n    a2: { angle: 30, r: 150 }, icB: 'file-text',\n    a3: { angle: 83.7, r: 130, size: 1.10 }, icC: 'trending-up', labelC: 'Activités' },\n  { a1: { ring: 'outer', idx: 3, label: 'Expert' }, icA: 'lightbulb',\n    a2: { angle: 90, r: 116 }, icB: 'table',\n    a3: { angle: -137.3, r: 130, size: 0.98 }, icC: 'wallet', labelC: 'Coût' },\n  { a1: { ring: 'inner', idx: 0, label: 'Porteur de projet' }, icA: 'rocket',\n    a2: { angle: 150, r: 146 }, icB: 'bar-chart-3',\n    a3: { angle: 35.6, r: 124, size: 0.94 }, icC: 'award', labelC: \"Résultat d'impact\" },\n  { a1: { ring: 'inner', idx: 1, label: 'Cohorte' }, icA: 'users',\n    a2: { angle: 210, r: 122 }, icB: 'folder-search', a3: null, icC: 'award', labelC: '' },\n  { a1: { ring: 'inner', idx: 2, label: 'Entrepreneur' }, icA: 'briefcase',\n    a2: null, icB: 'mail', a3: null, icC: 'award', labelC: '' },\n];\n\nconst SCAN_LABELS = [\n  { label: 'Relances', icon: 'mail' },\n  { label: 'Saisies', icon: 'pen-line' },\n  { label: \"Collecte d'infos\", icon: 'file-text' },\n  { label: 'Consolidation', icon: 'table' },\n  { label: 'Mise en forme', icon: 'bar-chart-3' },\n  { label: 'Recherche doc', icon: 'folder-search' },\n];\n\nconst CHIPS = [\n  { label: 'Informations à jour', icon: 'info' },\n  { label: 'Alertes', icon: 'bell' },\n  { label: 'Échanges centralisés', icon: 'message-circle' },\n  { label: 'Suivis', icon: 'list-checks' },\n];\n\nconst RESULTS = [\n  { label: 'Rendre compte', sub: 'Bilans et preuves prêts à tout moment', icon: 'file-check-2', accent: '#1d4af3', tint: 'rgba(29,74,243,0.10)' },\n  { label: 'Valoriser', sub: 'Impact rendu visible', icon: 'trending-up', accent: '#19a06d', tint: 'rgba(25,160,109,0.12)' },\n  { label: 'Améliorer', sub: 'Décider sur des faits', icon: 'refresh-cw', accent: '#5b7cf7', tint: 'rgba(91,124,247,0.12)' },\n];\n\nconst A1_ORDER = [0, 4, 1, 5, 2, 6, 3];\n\nconst ILLUS = [\n  'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Crect%20x%3D%224%22%20y%3D%2232%22%20width%3D%2216%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%222%22%20y%3D%2245%22%20width%3D%2218%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%226%22%20y%3D%2258%22%20width%3D%2214%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Ccircle%20cx%3D%2252%22%20cy%3D%2244%22%20r%3D%2227%22%20fill%3D%22%23eef4ff%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.5%22%3E%3C%2Fcircle%3E%0A%3Cpath%20d%3D%22M52%2024v3M52%2061v3M32%2044h3M69%2044h3%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%223.2%22%3E%3C%2Fpath%3E%0A%3Cpath%20d%3D%22M52%2044V30M52%2044l11%207%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%224.2%22%3E%3C%2Fpath%3E%0A%3Ccircle%20cx%3D%2252%22%20cy%3D%2244%22%20r%3D%223.4%22%20fill%3D%22%231d4af3%22%3E%3C%2Fcircle%3E%0A%3Ccircle%20cx%3D%2274%22%20cy%3D%2272%22%20r%3D%2216%22%20fill%3D%22%231d4af3%22%3E%3C%2Fcircle%3E%0A%3Cpath%20d%3D%22M67%2072.5l5%205%209-10%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%224.4%22%3E%3C%2Fpath%3E%0A%3C%2Fsvg%3E',\n  'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Crect%20x%3D%2242%22%20y%3D%2266%22%20width%3D%2210%22%20height%3D%2210%22%20fill%3D%22%23141d57%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2228%22%20y%3D%2276%22%20width%3D%2238%22%20height%3D%226%22%20rx%3D%223%22%20fill%3D%22%23141d57%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%228%22%20y%3D%2214%22%20width%3D%2278%22%20height%3D%2254%22%20rx%3D%229%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.5%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2216%22%20y%3D%2222%22%20width%3D%2236%22%20height%3D%2220%22%20rx%3D%224%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Cpath%20d%3D%22M20%2037l7-7%206%205%209-10%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223.4%22%3E%3C%2Fpath%3E%0A%3Ccircle%20cx%3D%2244%22%20cy%3D%2224.5%22%20r%3D%223.2%22%20fill%3D%22%231d4af3%22%3E%3C%2Fcircle%3E%0A%3Ccircle%20cx%3D%2268%22%20cy%3D%2232%22%20r%3D%2211%22%20stroke%3D%22%23dae6ff%22%20stroke-width%3D%227%22%3E%3C%2Fcircle%3E%0A%3Cpath%20d%3D%22M68%2021a11%2011%200%200%201%209.5%2016.5%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%227%22%3E%3C%2Fpath%3E%0A%3Crect%20x%3D%2216%22%20y%3D%2252%22%20width%3D%228%22%20height%3D%229%22%20rx%3D%222%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2228%22%20y%3D%2247%22%20width%3D%228%22%20height%3D%2214%22%20rx%3D%222%22%20fill%3D%22%235993ff%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2240%22%20y%3D%2243%22%20width%3D%228%22%20height%3D%2218%22%20rx%3D%222%22%20fill%3D%22%231d4af3%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2258%22%20y%3D%2248%22%20width%3D%2220%22%20height%3D%224.5%22%20rx%3D%222.25%22%20fill%3D%22%231d4af3%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2258%22%20y%3D%2257%22%20width%3D%2214%22%20height%3D%224.5%22%20rx%3D%222.25%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3C%2Fsvg%3E',\n  'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Crect%20x%3D%228%22%20y%3D%2276%22%20width%3D%2280%22%20height%3D%226%22%20rx%3D%223%22%20fill%3D%22%23141d57%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2214%22%20y%3D%2258%22%20width%3D%2217%22%20height%3D%2218%22%20rx%3D%223%22%20fill%3D%22%23dae6ff%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2237%22%20y%3D%2246%22%20width%3D%2217%22%20height%3D%2230%22%20rx%3D%223%22%20fill%3D%22%23dae6ff%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2260%22%20y%3D%2232%22%20width%3D%2217%22%20height%3D%2244%22%20rx%3D%223%22%20fill%3D%22%23dae6ff%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223%22%3E%3C%2Frect%3E%0A%3Cpath%20d%3D%22M16%2054l17-11%2014%208%2020-25%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.5%22%3E%3C%2Fpath%3E%0A%3Cpath%20d%3D%22M60%2015h14v14%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.5%22%3E%3C%2Fpath%3E%0A%3Ccircle%20cx%3D%2216%22%20cy%3D%2254%22%20r%3D%225%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%223.4%22%3E%3C%2Fcircle%3E%0A%3Ccircle%20cx%3D%2247%22%20cy%3D%2251%22%20r%3D%225%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%223.4%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E',\n  'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Cpath%20d%3D%22M22%2014a5%205%200%200%201%205-5h26l14%2014v42a5%205%200%200%201-5%205H27a5%205%200%200%201-5-5z%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.5%22%3E%3C%2Fpath%3E%0A%3Cpath%20d%3D%22M53%209v14h14%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.5%22%3E%3C%2Fpath%3E%0A%3Crect%20x%3D%2232%22%20y%3D%2230%22%20width%3D%2230%22%20height%3D%224.5%22%20rx%3D%222.25%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2232%22%20y%3D%2241%22%20width%3D%2230%22%20height%3D%224.5%22%20rx%3D%222.25%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2232%22%20y%3D%2252%22%20width%3D%2220%22%20height%3D%224.5%22%20rx%3D%222.25%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Cpath%20d%3D%22M24%2058l14%205v11c0%208-6%2013-14%2016-8-3-14-8-14-16V63z%22%20fill%3D%22%23dae6ff%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223.4%22%3E%3C%2Fpath%3E%0A%3Cpath%20d%3D%22M17%2076l4.5%204.5%208-9%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223.4%22%3E%3C%2Fpath%3E%0A%3Cellipse%20cx%3D%2272%22%20cy%3D%2280%22%20rx%3D%2214%22%20ry%3D%225.5%22%20fill%3D%22%23eef4ff%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223%22%3E%3C%2Fellipse%3E%0A%3Cpath%20d%3D%22M58%2080v-8c0%203%206.3%205.5%2014%205.5s14-2.5%2014-5.5v8%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223%22%20fill%3D%22%23eef4ff%22%3E%3C%2Fpath%3E%0A%3Cellipse%20cx%3D%2272%22%20cy%3D%2266%22%20rx%3D%2214%22%20ry%3D%225.5%22%20fill%3D%22%23eef4ff%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223%22%3E%3C%2Fellipse%3E%0A%3C%2Fsvg%3E',\n  'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Cpath%20d%3D%22M12%2084a10%2010%200%200%201%202-19.8%2013%2013%200%200%201%2024%203.4A8%208%200%200%201%2040%2084z%22%20fill%3D%22%23dae6ff%22%3E%3C%2Fpath%3E%0A%3Cpath%20d%3D%22M40%2084c22%200%2036-12%2042-30%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%224.5%22%3E%3C%2Fpath%3E%0A%3Cpath%20d%3D%22M76%2056l6-4%203%207%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%224.5%22%3E%3C%2Fpath%3E%0A%3Cg%20transform%3D%22rotate(45%2054%2042)%22%3E%0A%20%20%3Cpath%20d%3D%22M54%2012c9%208%2013%2020%2013%2032H41c0-12%204-24%2013-32z%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.2%22%3E%3C%2Fpath%3E%0A%20%20%3Cpath%20d%3D%22M54%2012c5.5%205%209.3%2011.6%2011.3%2019H42.7C44.7%2023.6%2048.5%2017%2054%2012z%22%20fill%3D%22%231d4af3%22%3E%3C%2Fpath%3E%0A%20%20%3Cpath%20d%3D%22M41%2044c-6%203-9%208-9%2014h9zM67%2044c6%203%209%208%209%2014h-9z%22%20fill%3D%22%235993ff%22%3E%3C%2Fpath%3E%0A%20%20%3Crect%20x%3D%2245%22%20y%3D%2244%22%20width%3D%2218%22%20height%3D%2210%22%20rx%3D%223%22%20fill%3D%22%23141d57%22%3E%3C%2Frect%3E%0A%20%20%3Ccircle%20cx%3D%2254%22%20cy%3D%2232%22%20r%3D%227%22%20fill%3D%22%231d4af3%22%3E%3C%2Fcircle%3E%0A%20%20%3Ccircle%20cx%3D%2254%22%20cy%3D%2232%22%20r%3D%223.2%22%20fill%3D%22%23dae6ff%22%3E%3C%2Fcircle%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E',\n];\n\nconst ICONS = {\"graduation-cap\":\"M2 9 12 4l10 5-10 5L2 9Z M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5\",\"megaphone\":\"M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1Z M15 8a5 5 0 0 1 0 8 M18 5.5a9 9 0 0 1 0 13\",\"user-check\":\"M15 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20 M8.5 10.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z M16 11.5l2 2 4-4\",\"lightbulb\":\"M9 18h6 M10 21h4 M12 3a6 6 0 0 0-3.5 10.9c.6.5.9 1.2.9 1.9V16h5.2v-.2c0-.7.3-1.4.9-1.9A6 6 0 0 0 12 3Z\",\"rocket\":\"M12 2.5c3.2 2.7 4.6 6.2 4.6 9.6L12 16l-4.6-3.9c0-3.4 1.4-6.9 4.6-9.6Z M12 10.2a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4Z M7.4 12.6 5 15v3.5l2.6-1.6 M16.6 12.6 19 15v3.5l-2.6-1.6 M10.4 19.2c.6 1.4 2.6 1.4 3.2 0\",\"users\":\"M16 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20 M9 10.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z M22 20v-1.5a4 4 0 0 0-3-3.9 M16 3.6a4 4 0 0 1 0 7\",\"briefcase\":\"M3 8h18v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8Z M9 8V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V8 M3 13h18\",\"mail\":\"M3 6h18v12H3V6Z M3 7l9 6 9-6\",\"pen-line\":\"M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3Z M14 7l3 3\",\"file-text\":\"M6 3h8l4 4v14H6V3Z M14 3v4h4 M9 12h6 M9 16h6\",\"table\":\"M3 5h18v14H3V5Z M3 10h18 M3 15h18 M10 5v14\",\"bar-chart-3\":\"M4 20V10 M10 20V4 M16 20v-7 M21 20H3\",\"folder-search\":\"M3 6h6l2 2h9v6.5 M3 6v13h8 M17.5 20a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z M20 20l2 2\",\"star\":\"m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9L12 3Z\",\"trending-up\":\"m3 16 6-6 4 4 8-8 M17 6h4v4\",\"wallet\":\"M3 7h15a2 2 0 0 1 2 2v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7Z M3 7V5.5A1.5 1.5 0 0 1 4.5 4H16 M16.5 13.5h.01\",\"award\":\"M12 14a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z M8.5 17.5 7 22l5-2.5L17 22l-1.5-4.5\",\"alert-triangle\":\"M12 4 2.5 20h19L12 4Z M12 10v4 M12 17.5h.01\",\"info\":\"M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z M12 11v5 M12 8h.01\",\"bell\":\"M18 16H6l1.5-2.2V10a4.5 4.5 0 1 1 9 0v3.8L18 16Z M10 19a2 2 0 0 0 4 0\",\"message-circle\":\"M21 11.5a8 8 0 0 1-11.6 7.1L3 21l2.4-6.4A8 8 0 1 1 21 11.5Z\",\"list-checks\":\"M10 6h11 M10 12h11 M10 18h11 M3 6l1.5 1.5L7.5 4.5 M3 17l1.5 1.5L7.5 15.5\",\"square-pen\":\"M11 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6 M17.5 3.5a2.1 2.1 0 0 1 3 3L13 14l-4 1 1-4 7.5-7.5Z\",\"file-check-2\":\"M6 3h8l4 4v14H6V3Z M14 3v4h4 M9 14.5l2 2 4-4\",\"refresh-cw\":\"M20 12a8 8 0 1 1-2.3-5.6 M20 4v5h-5\"};\n\nconst ORANGE = '#ec7f3d', BLUE = '#1d4af3', NAVY = '#141d57';\n\n// acte 3 : bulles claires et sobres\nconst A3_TONE = [\n  { bg: '#ffffff', bd: '#e2e5ee', ic: '#141d57' },\n  { bg: '#ffffff', bd: '#e2e5ee', ic: '#141d57' },\n  { bg: '#ffffff', bd: '#e2e5ee', ic: '#141d57' },\n  { bg: '#ffffff', bd: '#e2e5ee', ic: '#141d57' },\n  { bg: '#ffffff', bd: '#e2e5ee', ic: '#141d57' },\n];\n\nconst clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;\nconst easeOut = u => 1 - Math.pow(1 - u, 3);\nconst easeInOut = u => u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;\nconst lerp = (a, b, u) => a + (b - a) * u;\nconst mixHex = (c1, c2, u) => {\n  const p = h => h.charAt(0) === '#'\n    ? [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]\n    : h.replace(/[^\\d,.]/g, '').split(',').map(Number);\n  const [r1, g1, b1] = p(c1), [r2, g2, b2] = p(c2);\n  return 'rgb(' + Math.round(lerp(r1, r2, u)) + ',' + Math.round(lerp(g1, g2, u)) + ',' + Math.round(lerp(b1, b2, u)) + ')';\n};\n\nclass Component extends DCLogic {\n  constructor(props) {\n    super(props);\n    this.el = { node: [], circle: [], label: [], iconA: [], iconB: [], iconC: [], popup: [], warn: [], chip: [], chipText: [], result: [], link: [], light: [], illu: [], roleRow: [] };\n    // le bord attaquant du faisceau pointe l'angle A quand la rotation vaut A + 90 - beam0\n    this.scanWake = SLOTS.map(s => s.a2\n      ? T.sweepStart + T.sweepTurn * ((((s.a2.angle + 90 - T.beam0) % 360) + 360) % 360) / 360\n      : Infinity);\n    this.warnAppear = this.scanWake.slice(0, SCAN_LABELS.length).map(w => w + T.warnLag);\n    const k = i => A1_ORDER.indexOf(i);\n    this.roleAt = SLOTS.map((s, i) => T.roleStart + k(i) * T.roleStep);\n    this.orangeAt = SLOTS.map((s, i) => T.bubbleOrange + k(i) * T.bubbleOrangeStep);\n    this.blueAt = SLOTS.map((s, i) => T.blueStart + k(i) * T.blueStep);\n    this.linkAt = SLOTS.map((s, i) => T.linkStart + k(i) * T.linkStagger);\n    // couronne régulière autour du centre, une fois les bulles passées au bleu\n    this.ringPos = SLOTS.map((s, i) => ({\n      ang: -90 + k(i) * (360 / SLOTS.length),\n      r: T.ringR,\n      size: 1,\n    }));\n    this.a3At = SLOTS.map((s, i) => s.a3 ? T.a3Start + i * T.a3Step : Infinity);\n  }\n\n  componentDidMount() { this.start(); }\n  componentDidUpdate() { this.start(); }\n\n  start() {\n    if (this.raf) return;\n    if (this.t0 === undefined) this.t0 = performance.now();\n    this.tick = this.tick.bind(this);\n    this.raf = requestAnimationFrame(this.tick);\n  }\n\n  componentWillUnmount() { cancelAnimationFrame(this.raf); this.raf = 0; }\n\n  tick(now) {\n    this.frame((now - this.t0) % T.loop);\n    this.raf = requestAnimationFrame(this.tick);\n  }\n\n  // les bulles sont posées, puis mises en rotation, puis stoppées\n  orbit(s, t) {\n    const spinU = easeInOut(clamp01((t - T.spinStart) / T.spinDur));\n    const outer = s.a1.ring === 'outer';\n    return {\n      ang: outer ? -90 + 90 * s.a1.idx + spinU * 62 : -30 + 120 * s.a1.idx - spinU * 86,\n      r: outer ? 158 : 100,\n      size: outer ? 1.12 : 0.92,\n    };\n  }\n\n  slotPos(s, t, i) {\n    const p2 = this.orbit(s, t);\n    const p1 = s.a2 ? { ang: s.a2.angle, r: s.a2.r, size: 1 } : p2;\n    if (t < T.t12) return p1;\n    if (t < T.t12 + T.t12Dur) {\n      const u = easeInOut(clamp01((t - T.t12) / T.t12Dur));\n      return { ang: lerp(p1.ang, p2.ang, u), r: lerp(p1.r, p2.r, u), size: lerp(p1.size, p2.size, u) };\n    }\n    if (t < T.regroupAt) return p2;\n    // regroupement en couronne régulière avant le tissage des fils\n    const ring = this.ringPos[i];\n    if (t < T.regroupAt + T.regroupDur) {\n      const u = easeInOut(clamp01((t - T.regroupAt) / T.regroupDur));\n      return { ang: lerp(p2.ang, ring.ang, u), r: lerp(p2.r, ring.r, u), size: lerp(p2.size, ring.size, u) };\n    }\n    // les bulles disparaissent à la bascule : on peut rejoindre la position finale sans transition\n    if (t < T.t23 + 700 || !s.a3) return ring;\n    return { ang: s.a3.angle, r: s.a3.r, size: s.a3.size };\n  }\n\n  frame(t) {\n    const el = this.el;\n    const eraseU = easeInOut(clamp01((t - T.erase) / 900));\n    const inA1 = t < T.t12 + 750;\n    const inA2 = !inA1 && t < T.t23 + 400;\n    const inA3 = !inA1 && !inA2;\n    const wiped = clamp01((t - T.wipe) / 700);\n    const morph = easeInOut(clamp01((t - T.t23) / 1400));\n    const logoU = easeInOut(clamp01((t - T.wipe) / T.logoDur));\n    const outA2 = easeInOut(clamp01((t - T.t23) / 600));\n\n    let warnPulse = 0;\n    this.warnAppear.forEach(w => {\n      const since = t - w;\n      if (since >= 0 && since < 800) warnPulse = Math.max(warnPulse, Math.sin(Math.PI * (since / 800)));\n    });\n    let resPulse = 0;\n    RESULTS.forEach((r, i) => {\n      const since = t - (T.resultStart + i * T.resultStep);\n      if (since >= 0 && since < 900) resPulse = Math.max(resPulse, Math.sin(Math.PI * (since / 900)));\n    });\n    // le noyau bat à chaque illustration qui apparaît\n    let illuPulse = 0;\n    ILLUS.forEach((src, i) => {\n      const since = t - (T.illuStart + i * T.illuStep);\n      if (since >= 0 && since < 800) illuPulse = Math.max(illuPulse, Math.sin(Math.PI * (since / 800)));\n    });\n\n    // ---- sonar ----\n    const scanning = t < T.t12;\n    if (el.sweep) {\n      setS(el.sweep, 'transform', 'rotate(' + (T.beam0 + 360 * ((t - T.sweepStart) / T.sweepTurn)) + 'deg)');\n      setS(el.sweep, 'opacity', scanning ? String(clamp01((t - T.sweepStart) / 500) * (1 - clamp01((t - T.t12 + 700) / 700))) : '0');\n    }\n    if (el.ping) {\n      const pu = clamp01(((t - T.sweepStart) % T.sweepTurn) / T.sweepTurn);\n      setS(el.ping, 'transform', 'scale(' + lerp(0.24, 1, pu) + ')');\n      setS(el.ping, 'opacity', scanning ? String(0.5 * (1 - pu)) : '0');\n    }\n    const ringsOut = 1 - easeInOut(clamp01((t - T.t12 + 400) / 800));\n    if (el.ring1) setS(el.ring1, 'opacity', String(ringsOut));\n    if (el.ring2) setS(el.ring2, 'opacity', String(ringsOut));\n\n    // ---- noyau ----\n    if (el.coreWarn) {\n      setS(el.coreWarn, 'opacity', String(inA1 ? clamp01(t / 400) : 0));\n      setS(el.coreWarn, 'transform', 'scale(' + (1 + 0.24 * warnPulse) + ')');\n    }\n    if (el.coreLabel) {\n      const shown = A1_ORDER.filter((_, k) => t >= T.roleStart + k * T.roleStep);\n      const last = shown.length ? SLOTS[shown[shown.length - 1]].a1.label : '';\n      if (el.coreLabel.textContent !== last) el.coreLabel.textContent = last;\n      const pop = shown.length ? clamp01((t - (T.roleStart + (shown.length - 1) * T.roleStep)) / 300) : 0;\n      setS(el.coreLabel, 'opacity', String(inA2 && shown.length ? pop : 0));\n      setS(el.coreLabel, 'transform', 'scale(' + lerp(0.82, 1, pop) + ')');\n    }\n    if (el.halo) {\n      const pulse = inA3 ? Math.max(resPulse, illuPulse) : (inA1 ? warnPulse : 0);\n      setS(el.halo, 'background', inA3 ? 'rgba(29,74,243,0.32)' : 'rgba(236,127,61,0.35)');\n      setS(el.halo, 'opacity', String(0.9 * pulse * (1 - wiped)));\n      setS(el.halo, 'transform', 'scale(' + lerp(1, 1.9, pulse) + ')');\n    }\n    if (el.coreTarget) setS(el.coreTarget, 'opacity', String(inA3 ? (1 - wiped) : 0));\n    // le noyau ne disparaît jamais : il porte la boucle\n    if (el.core) {\n      const breath = 1 + 0.05 * Math.sin((t % 4200) / 4200 * Math.PI * 2);\n      setS(el.core, 'transform', 'scale(' + (breath + 0.15 * illuPulse) + ')');\n      const open = inA3 ? clamp01((t - T.t23) / 900) : 0;\n      const back = easeInOut(clamp01((t - T.titleOut) / 900));\n      setS(el.core, 'background', mixHex(mixHex(mixHex(NAVY, '#ffffff', open), NAVY, logoU), NAVY, back));\n    }\n    ILLUS.forEach((src, i) => {\n      const node = el.illu[i];\n      if (!node) return;\n      const start = T.illuStart + i * T.illuStep;\n      const inU = clamp01((t - start) / 450);\n      const outU = i < ILLUS.length - 1 ? clamp01((t - (start + T.illuStep)) / 450) : clamp01((t - T.wipe) / 500);\n      setS(node, 'opacity', String(inA3 ? inU * (1 - outU) : 0));\n      setS(node, 'transform', 'scale(' + lerp(0.72, 1, inU) + ')');\n    });\n\n\n    // ---- bulles ----\n    SLOTS.forEach((s, i) => {\n      const box = el.node[i];\n      if (!box) return;\n      const p = this.slotPos(s, t, i);\n      const a = p.ang * Math.PI / 180;\n      const x = Math.cos(a) * p.r;\n      const y = Math.sin(a) * p.r;\n\n      const birth = t - this.scanWake[i];\n      const roleSince = t - this.roleAt[i];\n      const a3Since = t - this.a3At[i];\n\n      let opacity = s.a2 && birth >= 0 ? clamp01(birth / 380) : 0;\n      opacity *= 1 - easeInOut(clamp01((t - T.t12) / 900));\n      if (roleSince >= 0) opacity = Math.max(opacity, clamp01(roleSince / 380));\n      opacity *= 1 - outA2;\n      if (s.a3 && a3Since >= 0) opacity = Math.max(opacity, clamp01(a3Since / 420));\n      opacity *= 1 - eraseU;\n\n      const popAt = (since, dur) => {\n        if (since < 0 || since > dur) return 1;\n        const b = since / dur;\n        let v = 1 + 0.17 * Math.sin(Math.PI * b) * (1 - b * 0.35);\n        if (since < dur * 0.32) v *= easeOut(since / (dur * 0.32));\n        return v;\n      };\n      let bounce = 1;\n      if (s.a2 && birth >= 0 && birth < 760) bounce = popAt(birth, 760);\n      if (roleSince >= 0 && roleSince < 760) bounce = popAt(roleSince, 760);\n      if (a3Since >= 0 && a3Since < 760) bounce = popAt(a3Since, 760);\n      // acte 1 : la bulle réagit quand son irritant est signalé\n      const wSince = t - (this.warnAppear[i] !== undefined ? this.warnAppear[i] : Infinity);\n      if (wSince >= 0 && wSince < 800) bounce *= 1 + 0.22 * Math.sin(Math.PI * (wSince / 800));\n      const blueSince = t - this.blueAt[i];\n      if (blueSince >= 0 && blueSince < 600) bounce *= 1 + 0.14 * Math.sin(Math.PI * (blueSince / 600));\n\n      setS(box, 'opacity', String(opacity));\n      setS(box, 'transform', 'translate(' + x + 'px,' + y + 'px) scale(' + (bounce * p.size) + ')');\n\n      const orangeU = easeOut(clamp01((t - this.orangeAt[i]) / 420));\n      const blueU = easeOut(clamp01((t - this.blueAt[i]) / 450));\n      const tone = A3_TONE[i] || A3_TONE[0];\n      if (el.circle[i]) {\n        setS(el.circle[i], 'background', mixHex(mixHex('#ffffff', tone.bg, morph), NAVY, logoU));\n        setS(el.circle[i], 'borderColor', mixHex(mixHex(mixHex(mixHex('#b9bdd0', '#f0b189', orangeU), '#9dbcff', blueU), tone.bd, morph), NAVY, logoU));\n        setS(el.circle[i], 'boxShadow', '0 6px 16px rgba(20,29,87,' + (0.06 * (1 - logoU)).toFixed(3) + ')');\n      }\n      if (el.iconA[i]) {\n        setS(el.iconA[i], 'opacity', String(inA2 ? 1 : 0));\n        setS(el.iconA[i], 'color', mixHex(mixHex(NAVY, ORANGE, orangeU), BLUE, blueU));\n      }\n      if (el.iconB[i]) setS(el.iconB[i], 'opacity', String(inA1 ? 1 : 0));\n      if (el.iconC[i]) {\n        setS(el.iconC[i], 'opacity', String(inA3 ? (1 - wiped) : 0));\n        setS(el.iconC[i], 'color', tone.ic);\n      }\n      if (el.label[i] && s.a3) {\n        const inU = clamp01((a3Since - 300) / 420);\n        setS(el.label[i], 'opacity', String(inA3 ? inU * (1 - wiped) : 0));\n        setS(el.label[i], 'transform', 'translateX(-50%) translateY(' + lerp(6, 0, easeOut(inU)) + 'px)');\n      }\n\n      // ---- liens ----\n      const line = el.link[i];\n      const light = el.light[i];\n      if (line) {\n        let draw = 0, vis = 0;\n        if (t < T.t23 + 600) {\n          draw = easeOut(clamp01((t - this.linkAt[i]) / T.linkDraw));\n          vis = draw * 0.95 * (1 - outA2);\n        } else if (s.a3) {\n          draw = easeOut(clamp01((a3Since - T.a3LinkLag) / T.a3LinkDraw));\n          vis = draw * 0.95 * (1 - eraseU);\n        }\n        setA(line, 'x2', String(lerp(200, 200 + x, draw)));\n        setA(line, 'y2', String(lerp(200, 200 + y, draw)));\n        setA(line, 'opacity', String(vis));\n        setA(line, 'stroke', mixHex(mixHex(mixHex('#b9bdd0', '#bcd4ff', blueU), '#8fb9ff', morph), NAVY, logoU));\n        setA(line, 'stroke-width', String(lerp(lerp(1.4, 2.4, morph), 3, logoU)));\n      }\n      if (light && s.a3) {\n        setA(light, 'x2', String(200 + x));\n        setA(light, 'y2', String(200 + y));\n        const on = clamp01((a3Since - T.a3LightLag) / 500) * (1 - clamp01((t - T.wipe) / 600));\n        setA(light, 'opacity', String(inA3 ? on * 0.9 : 0));\n        setS(light, 'strokeDashoffset', String((i % 2 === 0 ? -1 : 1) * ((t / 16) % 51)));\n      }\n    });\n\n    // ---- infobulles de scan + alertes (acte 1) ----\n    let warnCount = 0;\n    SCAN_LABELS.forEach((p, i) => {\n      const node = el.popup[i];\n      const since = t - this.scanWake[i];\n      const inU = since >= 0 ? clamp01(since / 380) : 0;\n      const outU = clamp01((t - T.t12) / 600);\n      if (node) {\n        setS(node, 'opacity', String(inU * (1 - outU)));\n        setS(node, 'transform', 'translateX(' + lerp(20, 0, inU) + 'px)');\n      }\n      const wSince = t - this.warnAppear[i];\n      const wU = wSince >= 0 ? clamp01(wSince / T.warnDur) : 0;\n      if (wSince >= 0) warnCount++;\n      if (el.warn[i]) {\n        setS(el.warn[i], 'opacity', String(wU * (1 - outU)));\n        setS(el.warn[i], 'transform', 'scale(' + lerp(0.6, 1, wU) + ')');\n      }\n      if (node && wU > 0) setS(node, 'borderColor', mixHex('#dfe0e6', '#f0b189', wU * (1 - outU)));\n    });\n\n    // ---- jauge ----\n    if (el.gauge) {\n      const inU = clamp01((t - T.gaugeIn) / 500);\n      const outU = clamp01((t - T.t12) / 600);\n      setS(el.gauge, 'opacity', String(inU * (1 - outU)));\n    }\n    const kept = 90 - warnCount * 11;\n    if (el.gaugeFill) setS(el.gaugeFill, 'width', kept + '%');\n    if (el.gaugeVal && el.gaugeVal.textContent !== kept + ' %') el.gaugeVal.textContent = kept + ' %';\n    if (el.gaugeLost && el.gaugeLost.textContent !== (100 - kept) + ' %') el.gaugeLost.textContent = (100 - kept) + ' %';\n\n    // ---- carte « les acteurs réunis » (acte 2) ----\n    if (el.rolesCard) {\n      const inU = clamp01((t - T.listIn) / 450);\n      const outU = clamp01((t - T.listOut) / 500);\n      setS(el.rolesCard, 'opacity', String(inU * (1 - outU)));\n      setS(el.rolesCard, 'transform', 'translateX(' + lerp(22, 0, easeOut(inU)) + 'px)');\n    }\n    A1_ORDER.forEach((slot, k) => {\n      const row = el.roleRow[k];\n      if (!row) return;\n      const inU = clamp01((t - (T.roleStart + k * T.roleStep)) / 380);\n      setS(row, 'opacity', String(inU));\n      setS(row, 'transform', 'translateX(' + lerp(12, 0, easeOut(inU)) + 'px)');\n    });\n\n    // ---- infobulles acte 2 : noir -> orange -> bleu ----\n    const chipsOut = easeInOut(clamp01((t - T.t23) / 700));\n    CHIPS.forEach((c, i) => {\n      const node = el.chip[i];\n      if (!node) return;\n      const since = t - (T.chipStart + i * T.chipStep);\n      const inU = since >= 0 ? clamp01(since / 400) : 0;\n      const orangeU = easeOut(clamp01((t - (T.chipOrange + i * T.chipOrangeStep)) / 420));\n      const blueU = easeOut(clamp01((t - (T.chipBlue + i * T.chipBlueStep)) / 450));\n      const flashO = orangeU > 0 && orangeU < 1 ? Math.sin(Math.PI * orangeU) : 0;\n      const flashB = blueU > 0 && blueU < 1 ? Math.sin(Math.PI * blueU) : 0;\n      const flash = Math.max(flashO, flashB);\n      setS(node, 'opacity', String(inU * (1 - chipsOut)));\n      setS(node, 'transform', 'translateY(' + lerp(10, 0, inU) + 'px) scale(' + (1 + 0.05 * flash) + ')');\n      setS(node, 'color', mixHex(mixHex(NAVY, ORANGE, orangeU), BLUE, blueU));\n      setS(node, 'borderColor', mixHex(mixHex('#dfe0e6', '#f0b189', orangeU), '#bcd4ff', blueU));\n      if (el.chipText[i]) setS(el.chipText[i], 'color', mixHex(mixHex(NAVY, ORANGE, orangeU), BLUE, blueU));\n    });\n\n    // ---- bénéfices : après les flux, jusqu'à la fin ----\n    if (el.resultWrap) setS(el.resultWrap, 'opacity', String(t >= T.resultStart - 200 ? 1 : 0));\n    const lastStart = T.resultStart + (RESULTS.length - 1) * T.resultStep;\n    const settle = easeOut(clamp01((t - lastStart - 900) / 700));\n    const outroU = clamp01((t - T.titleOut) / 800);\n    RESULTS.forEach((r, i) => {\n      const node = el.result[i];\n      if (!node) return;\n      const since = t - (T.resultStart + i * T.resultStep);\n      const inU = easeOut(clamp01(since / 520));\n      const isLast = i === RESULTS.length - 1;\n      const active = since >= 0 && (isLast || t < T.resultStart + (i + 1) * T.resultStep);\n      const dim = active ? 1 : lerp(0.46, 1, settle);\n      const pop = since >= 0 && since < 900 ? Math.sin(Math.PI * (since / 900)) : 0;\n      setS(node, 'opacity', String(inU * dim * (1 - outroU)));\n      setS(node, 'transform', 'translateX(' + lerp(38, 0, inU) + 'px) scale(' + (lerp(0.93, 1, inU) + 0.05 * pop) + ')');\n      setS(node, 'boxShadow', '0 10px 26px rgba(20,29,87,' + (0.07 + 0.14 * pop).toFixed(3) + ')');\n      setS(node, 'borderColor', mixHex('#e6e7ed', r.accent, 0.55 * pop));\n    });\n\n    // ---- signature finale ----\n    if (el.title) {\n      const inU = clamp01((t - T.titleIn) / 700) * (1 - outroU);\n      setS(el.title, 'opacity', String(inU));\n      setS(el.title, 'transform', 'translateY(' + lerp(14, 0, inU) + 'px)');\n    }\n  }\n\n  renderVals() {\n    this.start();\n    const set = (bucket, i) => node => { this.el[bucket][i] = node; };\n    return {\n      stageRef: n => { this.el.stage = n; },\n      ring1Ref: n => { this.el.ring1 = n; },\n      ring2Ref: n => { this.el.ring2 = n; },\n      sweepRef: n => { this.el.sweep = n; },\n      pingRef: n => { this.el.ping = n; },\n      haloRef: n => { this.el.halo = n; },\n      coreRef: n => { this.el.core = n; },\n      coreLabelRef: n => { this.el.coreLabel = n; },\n      coreWarnRef: n => { this.el.coreWarn = n; },\n      coreTargetRef: n => { this.el.coreTarget = n; },\n      gaugeRef: n => { this.el.gauge = n; },\n      gaugeFillRef: n => { this.el.gaugeFill = n; },\n      gaugeValRef: n => { this.el.gaugeVal = n; },\n      gaugeLostRef: n => { this.el.gaugeLost = n; },\n      rolesCardRef: n => { this.el.rolesCard = n; },\n      roleList: A1_ORDER.map((slot, k) => ({\n        label: SLOTS[slot].a1.label,\n        icon: ICONS[SLOTS[slot].icA],\n        ref: set('roleRow', k),\n      })),\n      coreIllus: ILLUS.map((src, i) => ({\n        ref: node => {\n          this.el.illu[i] = node;\n          if (node && node.getAttribute('src') !== src) setA(node, 'src', src);\n        },\n      })),\n      resultWrapRef: n => { this.el.resultWrap = n; },\n      titleRef: n => { this.el.title = n; },\n      links: SLOTS.map((s, i) => ({ ref: set('link', i), lightRef: set('light', i) })),\n      nodes: SLOTS.map((s, i) => ({\n        iconA: ICONS[s.icA], iconB: ICONS[s.icB], iconC: ICONS[s.icC], labelC: s.labelC,\n        ref: set('node', i),\n        circleRef: set('circle', i),\n        labelRef: set('label', i),\n        iconARef: set('iconA', i),\n        iconBRef: set('iconB', i),\n        iconCRef: set('iconC', i),\n      })),\n      scanPopups: SCAN_LABELS.map((p, i) => ({ ...p, icon: ICONS[p.icon], ref: set('popup', i), warnRef: set('warn', i) })),\n      chips: CHIPS.map((c, i) => ({ ...c, icon: ICONS[c.icon], ref: set('chip', i), textRef: set('chipText', i) })),\n      resultChips: RESULTS.map((r, i) => ({\n        ...r,\n        icon: ICONS[r.icon],\n        ref: set('result', i),\n        tileRef: node => {\n          if (!node) return;\n          setS(node, 'background', r.tint);\n          setS(node, 'color', r.accent);\n        },\n      })),\n    };\n  }\n}\n\n<\u002Fscript>\n\n\n<\u002Fbody><\u002Fhtml>"
+"<!DOCTYPE html>\n<html><head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<script src=\"e8724ed9-96bc-44a7-8eab-b8113c4e8bc2\"><\u002Fscript>\n<\u002Fhead>\n<body>\n\n<x-dc>\n<helmet>\n<style>/* latin-ext */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(\"2b64b86e-dacf-47e9-a3e6-5c6b2eae8833\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(\"ca6573a7-8b3e-47b0-b8ce-689409c06ab8\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"2b64b86e-dacf-47e9-a3e6-5c6b2eae8833\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"ca6573a7-8b3e-47b0-b8ce-689409c06ab8\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"2b64b86e-dacf-47e9-a3e6-5c6b2eae8833\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"ca6573a7-8b3e-47b0-b8ce-689409c06ab8\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 700;\n  font-display: swap;\n  src: url(\"2b64b86e-dacf-47e9-a3e6-5c6b2eae8833\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 700;\n  font-display: swap;\n  src: url(\"ca6573a7-8b3e-47b0-b8ce-689409c06ab8\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 800;\n  font-display: swap;\n  src: url(\"2b64b86e-dacf-47e9-a3e6-5c6b2eae8833\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Outfit';\n  font-style: normal;\n  font-weight: 800;\n  font-display: swap;\n  src: url(\"ca6573a7-8b3e-47b0-b8ce-689409c06ab8\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n<\u002Fstyle>\n<style>\n  body { margin:0; background:#fafbfb00; font-family:'Outfit',sans-serif; }\n  a { color:#1d4af3; text-decoration:none; }\n  a:hover { color:#1535e0; }\n  * { box-sizing:border-box; }\n<\u002Fstyle>\n<\u002Fhelmet>\n\n<section style=\"min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;background:#fafbfb00;\">\n  <div style=\"display:flex;justify-content:center;align-items:center;width:100%;\">\n\n    <div ref=\"{{ stageRef }}\" style=\"position:relative;width:664px;height:512px;\">\n     <div style=\"position:absolute;left:0;top:0;width:664px;height:512px;\">\n\n      <div style=\"position:absolute;left:30px;top:0;width:400px;height:400px;\">\n        <div ref=\"{{ ring1Ref }}\" style=\"position:absolute;inset:0;border-radius:50%;border:1px solid #e6e7ed;\"><\u002Fdiv>\n        <div ref=\"{{ ring2Ref }}\" style=\"position:absolute;inset:22%;border-radius:50%;border:1px solid #edeef2;\"><\u002Fdiv>\n        <div ref=\"{{ pingRef }}\" style=\"position:absolute;inset:0;border-radius:50%;border:1px solid #f3cdb2;opacity:0;\"><\u002Fdiv>\n        <div ref=\"{{ sweepRef }}\" style=\"position:absolute;inset:0;border-radius:50%;opacity:0;will-change:transform,opacity;background:conic-gradient(rgba(236,127,61,0.16) 0deg,rgba(236,127,61,0.05) 32deg,transparent 64deg,transparent 360deg);\"><\u002Fdiv>\n\n        <svg sc-camel-view-box=\"0 0 400 400\" style=\"position:absolute;inset:0;width:100%;height:100%;overflow:visible;\">\n          <sc-for list=\"{{ links }}\" as=\"l\" hint-placeholder-count=\"7\">\n            <line ref=\"{{ l.ref }}\" x1=\"200\" y1=\"200\" x2=\"200\" y2=\"200\" stroke=\"#b9bdd0\" stroke-width=\"1.4\" stroke-linecap=\"round\" opacity=\"0\"><\u002Fline>\n          <\u002Fsc-for>\n          <sc-for list=\"{{ links }}\" as=\"l\" hint-placeholder-count=\"7\">\n            <line ref=\"{{ l.lightRef }}\" x1=\"200\" y1=\"200\" x2=\"200\" y2=\"200\" stroke=\"#1d4af3\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-dasharray=\"7 44\" opacity=\"0\"><\u002Fline>\n          <\u002Fsc-for>\n        <\u002Fsvg>\n\n        <div style=\"position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;\">\n          <div ref=\"{{ haloRef }}\" style=\"position:absolute;inset:0;border-radius:50%;background:rgba(236,127,61,0.35);opacity:0;\"><\u002Fdiv>\n          <div ref=\"{{ coreRef }}\" style=\"position:absolute;inset:0;border-radius:50%;background:#141d57;display:flex;align-items:center;justify-content:center;padding:9px;will-change:transform,background;\">\n            <span ref=\"{{ coreLabelRef }}\" style=\"position:absolute;left:8px;right:8px;font-size:10.5px;font-weight:700;color:#ffffff;text-align:center;line-height:1.25;text-wrap:pretty;opacity:0;\">Formateur<\u002Fspan>\n            <span ref=\"{{ coreWarnRef }}\" style=\"position:absolute;display:flex;opacity:0;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:30px;height:30px;color:#ec7f3d;\"><path d=\"M12 4 2.5 20h19L12 4Z M12 10v4 M12 17.5h.01\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n            <span ref=\"{{ coreTargetRef }}\" style=\"position:absolute;display:flex;align-items:center;justify-content:center;inset:0;opacity:0;\">\n              <sc-for list=\"{{ coreIllus }}\" as=\"ci\" hint-placeholder-count=\"5\">\n                <img ref=\"{{ ci.ref }}\" alt=\"\" style=\"position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;object-fit:contain;opacity:0;\">\n              <\u002Fsc-for>\n            <\u002Fspan>\n          <\u002Fdiv>\n        <\u002Fdiv>\n\n        <sc-for list=\"{{ nodes }}\" as=\"n\" hint-placeholder-count=\"7\">\n          <div ref=\"{{ n.ref }}\" style=\"position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;opacity:0;will-change:transform,opacity;\">\n            <div ref=\"{{ n.circleRef }}\" style=\"position:absolute;inset:0;border-radius:50%;background:#ffffff;border:1px solid #b9bdd0;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(20,29,87,0.06);\">\n              <span ref=\"{{ n.iconARef }}\" style=\"position:absolute;display:flex;color:#141d57;opacity:0;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:23px;height:23px;\"><path d=\"{{ n.iconA }}\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n              <span ref=\"{{ n.iconBRef }}\" style=\"position:absolute;display:flex;color:#ec7f3d;opacity:0;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:23px;height:23px;\"><path d=\"{{ n.iconB }}\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n              <span ref=\"{{ n.iconCRef }}\" style=\"position:absolute;display:flex;color:#8fb9ff;opacity:0;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:23px;height:23px;\"><path d=\"{{ n.iconC }}\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n            <\u002Fdiv>\n            <div ref=\"{{ n.labelRef }}\" style=\"position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:8px;font-size:11px;font-weight:700;color:#141d57;white-space:nowrap;opacity:0;\">{{ n.labelC }}<\u002Fdiv>\n          <\u002Fdiv>\n        <\u002Fsc-for>\n      <\u002Fdiv>\n\n      <div style=\"position:absolute;right:0;top:132px;width:216px;display:flex;flex-direction:column;gap:6px;align-items:flex-end;\">\n        <sc-for list=\"{{ scanPopups }}\" as=\"p\" hint-placeholder-count=\"6\">\n          <div ref=\"{{ p.ref }}\" style=\"opacity:0;background:#ffffff;border:1px solid #dfe0e6;border-radius:10px;padding:9px 13px;display:flex;align-items:center;gap:9px;width:100%;box-shadow:0 6px 16px rgba(20,29,87,0.07);\">\n            <svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:15px;height:15px;color:#78778b;flex-shrink:0;\"><path d=\"{{ p.icon }}\"><\u002Fpath><\u002Fsvg>\n            <span style=\"font-size:12px;font-weight:600;color:#141d57;white-space:nowrap;\">{{ p.label }}<\u002Fspan>\n            <span ref=\"{{ p.warnRef }}\" style=\"margin-left:auto;display:flex;flex-shrink:0;opacity:0;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:15px;height:15px;color:#ec7f3d;\"><path d=\"M12 4 2.5 20h19L12 4Z M12 10v4 M12 17.5h.01\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n          <\u002Fdiv>\n        <\u002Fsc-for>\n      <\u002Fdiv>\n\n      <div ref=\"{{ rolesCardRef }}\" style=\"position:absolute;right:0;top:128px;width:220px;opacity:0;background:#ffffff;border:1px solid #dfe0e6;border-radius:14px;padding:15px 17px;box-shadow:0 10px 26px rgba(20,29,87,0.08);\">\n        <div style=\"font-size:10.5px;font-weight:700;color:#8c8aa1;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:12px;\">Les acteurs réunis<\u002Fdiv>\n        <div style=\"display:flex;flex-direction:column;gap:10px;\">\n          <sc-for list=\"{{ roleList }}\" as=\"r\" hint-placeholder-count=\"7\">\n            <div ref=\"{{ r.ref }}\" style=\"opacity:0;display:flex;align-items:center;gap:10px;\">\n              <span style=\"display:flex;color:#141d57;flex-shrink:0;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:15px;height:15px;\"><path d=\"{{ r.icon }}\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n              <span style=\"font-size:12px;font-weight:600;color:#141d57;white-space:nowrap;\">{{ r.label }}<\u002Fspan>\n            <\u002Fdiv>\n          <\u002Fsc-for>\n        <\u002Fdiv>\n      <\u002Fdiv>\n\n      <div ref=\"{{ resultWrapRef }}\" style=\"position:absolute;right:0;top:174px;width:266px;display:flex;flex-direction:column;gap:11px;opacity:0;\">\n        <sc-for list=\"{{ resultChips }}\" as=\"r\" hint-placeholder-count=\"3\">\n          <div ref=\"{{ r.ref }}\" style=\"opacity:0;background:#ffffff;border:1px solid #e6e7ed;border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:12px;\">\n            <span ref=\"{{ r.tileRef }}\" style=\"display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:rgba(29,74,243,0.10);flex-shrink:0;color:#1d4af3;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:18px;height:18px;\"><path d=\"{{ r.icon }}\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n            <span style=\"display:flex;flex-direction:column;gap:3px;min-width:0;\">\n              <span style=\"font-size:12.5px;font-weight:700;color:#141d57;\">{{ r.label }}<\u002Fspan>\n              <span style=\"font-size:10.5px;font-weight:500;color:#78778b;line-height:1.35;text-wrap:pretty;\">{{ r.sub }}<\u002Fspan>\n            <\u002Fspan>\n          <\u002Fdiv>\n        <\u002Fsc-for>\n      <\u002Fdiv>\n\n      <div style=\"position:absolute;left:30px;top:424px;width:400px;\">\n        <div style=\"display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;\">\n          <sc-for list=\"{{ chips }}\" as=\"c\" hint-placeholder-count=\"4\">\n            <div ref=\"{{ c.ref }}\" style=\"opacity:0;color:#141d57;background:#ffffff;border:1px solid #dfe0e6;border-radius:10px;padding:10px 13px;display:flex;align-items:center;gap:9px;min-width:0;\">\n              <svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:15px;height:15px;flex-shrink:0;\"><path d=\"{{ c.icon }}\"><\u002Fpath><\u002Fsvg>\n              <span ref=\"{{ c.textRef }}\" style=\"font-size:12px;font-weight:600;color:#141d57;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;\">{{ c.label }}<\u002Fspan>\n            <\u002Fdiv>\n          <\u002Fsc-for>\n        <\u002Fdiv>\n\n        <div ref=\"{{ gaugeRef }}\" style=\"position:absolute;left:0;top:2px;width:100%;opacity:0;\">\n          <div style=\"display:grid;grid-template-columns:24px minmax(0,1fr) 24px;gap:11px;align-items:flex-end;margin-bottom:9px;\">\n            <span><\u002Fspan>\n            <div style=\"display:flex;align-items:flex-end;justify-content:space-between;gap:16px;\">\n              <div style=\"font-size:10.5px;font-weight:600;color:#8c8aa1;letter-spacing:0.5px;text-transform:uppercase;\">Temps pour accompagner<\u002Fdiv>\n              <div style=\"font-size:10.5px;font-weight:600;color:#8c8aa1;letter-spacing:0.5px;text-transform:uppercase;text-align:right;\">Absorbé par l'administratif<\u002Fdiv>\n            <\u002Fdiv>\n            <span><\u002Fspan>\n          <\u002Fdiv>\n          <div style=\"display:grid;grid-template-columns:24px minmax(0,1fr) 24px;gap:11px;align-items:center;\">\n            <span style=\"display:flex;align-items:center;justify-content:center;color:#8c8aa1;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:20px;height:20px;\"><path d=\"M16 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20 M9 10.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z M22 20v-1.5a4 4 0 0 0-3-3.9 M16 3.6a4 4 0 0 1 0 7\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n            <div style=\"position:relative;height:30px;border-radius:999px;background:#ec7f3d;overflow:hidden;display:flex;align-items:center;\">\n              <div ref=\"{{ gaugeFillRef }}\" style=\"position:absolute;left:0;top:0;bottom:0;width:90%;background:#1d4af3;border-right:2px solid #ffffff;transition:width 0.6s cubic-bezier(.22,1,.36,1);\"><\u002Fdiv>\n              <span ref=\"{{ gaugeValRef }}\" style=\"position:relative;margin-left:14px;font-size:13px;font-weight:800;color:#ffffff;\">90 %<\u002Fspan>\n              <span ref=\"{{ gaugeLostRef }}\" style=\"position:relative;margin-left:auto;margin-right:14px;font-size:13px;font-weight:800;color:#ffffff;\">10 %<\u002Fspan>\n            <\u002Fdiv>\n            <span style=\"display:flex;align-items:center;justify-content:center;color:#8c8aa1;\"><svg sc-camel-view-box=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"width:20px;height:20px;\"><path d=\"M11 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6 M17.5 3.5a2.1 2.1 0 0 1 3 3L13 14l-4 1 1-4 7.5-7.5Z\"><\u002Fpath><\u002Fsvg><\u002Fspan>\n          <\u002Fdiv>\n        <\u002Fdiv>\n\n        <div ref=\"{{ titleRef }}\" style=\"position:absolute;left:0;top:0;width:100%;opacity:0;display:flex;justify-content:center;\">\n          <span style=\"font-size:46px;font-weight:800;letter-spacing:-1.4px;color:#141d57;line-height:1;\">SkailUp<\u002Fspan>\n        <\u002Fdiv>\n      <\u002Fdiv>\n\n     <\u002Fdiv>\n    <\u002Fdiv>\n  <\u002Fdiv>\n<\u002Fsection>\n\n<\u002Fx-dc>\n<script type=\"text/x-dc\" data-dc-script=\"\" data-props=\"{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:820}}\">\nconst SPEED = 1.12;\nconst NO_SCALE = { beam0: 1, ringR: 1 };\n// n'écrire dans le DOM que ce qui change vraiment\nconst setS = (n, k, v) => { if (!n) return; const c = n.__s || (n.__s = {}); if (c[k] !== v) { c[k] = v; n.style[k] = v; } };\nconst setA = (n, k, v) => { if (!n) return; const c = n.__a || (n.__a = {}); if (c[k] !== v) { c[k] = v; n.setAttribute(k, v); } };\nconst stretch = o => { const r = {}; for (const k in o) r[k] = NO_SCALE[k] ? o[k] : Math.round(o[k] * SPEED); return r; };\n\nconst T = stretch({\n  // ACTE 1 — sonar : on détecte la charge administrative\n  sweepStart: 400, sweepTurn: 6000, beam0: -14,\n  gaugeIn: 2400,\n  warnLag: 6000, warnDur: 320,\n  t12: 13000, t12Dur: 1400,\n  // ACTE 2 — les acteurs, l'orbite, le regroupement, puis les liens\n  listIn: 14400, listOut: 19400,\n  roleStart: 14700, roleStep: 620,\n  chipStart: 20000, chipStep: 400,\n  spinStart: 22000, spinDur: 5200,\n  bubbleOrange: 22200, bubbleOrangeStep: 320,\n  chipOrange: 25000, chipOrangeStep: 340,\n  stopT: 27200,\n  blueStart: 27500, blueStep: 320,\n  regroupAt: 30100, regroupDur: 1200, ringR: 122,\n  linkStart: 31500, linkStagger: 210, linkDraw: 560,\n  chipBlue: 33700, chipBlueStep: 360,\n  t23: 36000,\n  // ACTE 3 — une bulle, un lien, un flux… puis les bénéfices\n  a3Start: 37400, a3Step: 1350, a3LinkLag: 250, a3LinkDraw: 620, a3LightLag: 900,\n  illuStart: 37600, illuStep: 1350,\n  resultStart: 44600, resultStep: 1050,\n  // les cercles deviennent le logo, le titre s'écrit, puis tout s'efface sauf le noyau\n  wipe: 48000, logoDur: 900, titleIn: 49400, titleOut: 52400, erase: 52400, loop: 54000,\n});\n\nconst SLOTS = [\n  { a1: { ring: 'outer', idx: 0, label: 'Formateur' }, icA: 'graduation-cap',\n    a2: { angle: -90, r: 140 }, icB: 'mail',\n    a3: { angle: -46.4, r: 150, size: 1.40 }, icC: 'users', labelC: 'Présences' },\n  { a1: { ring: 'outer', idx: 1, label: 'Coach' }, icA: 'megaphone',\n    a2: { angle: -30, r: 118 }, icB: 'pen-line',\n    a3: { angle: 134.2, r: 153, size: 1.40 }, icC: 'star', labelC: 'Évaluation' },\n  { a1: { ring: 'outer', idx: 2, label: 'Mentor' }, icA: 'user-check',\n    a2: { angle: 30, r: 150 }, icB: 'file-text',\n    a3: { angle: 83.7, r: 130, size: 1.10 }, icC: 'trending-up', labelC: 'Activités' },\n  { a1: { ring: 'outer', idx: 3, label: 'Expert' }, icA: 'lightbulb',\n    a2: { angle: 90, r: 116 }, icB: 'table',\n    a3: { angle: -137.3, r: 130, size: 0.98 }, icC: 'wallet', labelC: 'Coût' },\n  { a1: { ring: 'inner', idx: 0, label: 'Porteur de projet' }, icA: 'rocket',\n    a2: { angle: 150, r: 146 }, icB: 'bar-chart-3',\n    a3: { angle: 35.6, r: 124, size: 0.94 }, icC: 'award', labelC: \"Résultat d'impact\" },\n  { a1: { ring: 'inner', idx: 1, label: 'Cohorte' }, icA: 'users',\n    a2: { angle: 210, r: 122 }, icB: 'folder-search', a3: null, icC: 'award', labelC: '' },\n  { a1: { ring: 'inner', idx: 2, label: 'Entrepreneur' }, icA: 'briefcase',\n    a2: null, icB: 'mail', a3: null, icC: 'award', labelC: '' },\n];\n\nconst SCAN_LABELS = [\n  { label: 'Relances', icon: 'mail' },\n  { label: 'Saisies', icon: 'pen-line' },\n  { label: \"Collecte d'infos\", icon: 'file-text' },\n  { label: 'Consolidation', icon: 'table' },\n  { label: 'Mise en forme', icon: 'bar-chart-3' },\n  { label: 'Recherche doc', icon: 'folder-search' },\n];\n\nconst CHIPS = [\n  { label: 'Informations à jour', icon: 'info' },\n  { label: 'Alertes', icon: 'bell' },\n  { label: 'Échanges centralisés', icon: 'message-circle' },\n  { label: 'Suivis', icon: 'list-checks' },\n];\n\nconst RESULTS = [\n  { label: 'Rendre compte', sub: 'Bilans et preuves prêts à tout moment', icon: 'file-check-2', accent: '#1d4af3', tint: 'rgba(29,74,243,0.10)' },\n  { label: 'Valoriser', sub: 'Impact rendu visible', icon: 'trending-up', accent: '#19a06d', tint: 'rgba(25,160,109,0.12)' },\n  { label: 'Améliorer', sub: 'Décider sur des faits', icon: 'refresh-cw', accent: '#5b7cf7', tint: 'rgba(91,124,247,0.12)' },\n];\n\nconst A1_ORDER = [0, 4, 1, 5, 2, 6, 3];\n\nconst ILLUS = [\n  'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Crect%20x%3D%224%22%20y%3D%2232%22%20width%3D%2216%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%222%22%20y%3D%2245%22%20width%3D%2218%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%226%22%20y%3D%2258%22%20width%3D%2214%22%20height%3D%225%22%20rx%3D%222.5%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Ccircle%20cx%3D%2252%22%20cy%3D%2244%22%20r%3D%2227%22%20fill%3D%22%23eef4ff%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.5%22%3E%3C%2Fcircle%3E%0A%3Cpath%20d%3D%22M52%2024v3M52%2061v3M32%2044h3M69%2044h3%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%223.2%22%3E%3C%2Fpath%3E%0A%3Cpath%20d%3D%22M52%2044V30M52%2044l11%207%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%224.2%22%3E%3C%2Fpath%3E%0A%3Ccircle%20cx%3D%2252%22%20cy%3D%2244%22%20r%3D%223.4%22%20fill%3D%22%231d4af3%22%3E%3C%2Fcircle%3E%0A%3Ccircle%20cx%3D%2274%22%20cy%3D%2272%22%20r%3D%2216%22%20fill%3D%22%231d4af3%22%3E%3C%2Fcircle%3E%0A%3Cpath%20d%3D%22M67%2072.5l5%205%209-10%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%224.4%22%3E%3C%2Fpath%3E%0A%3C%2Fsvg%3E',\n  'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Crect%20x%3D%2242%22%20y%3D%2266%22%20width%3D%2210%22%20height%3D%2210%22%20fill%3D%22%23141d57%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2228%22%20y%3D%2276%22%20width%3D%2238%22%20height%3D%226%22%20rx%3D%223%22%20fill%3D%22%23141d57%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%228%22%20y%3D%2214%22%20width%3D%2278%22%20height%3D%2254%22%20rx%3D%229%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.5%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2216%22%20y%3D%2222%22%20width%3D%2236%22%20height%3D%2220%22%20rx%3D%224%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Cpath%20d%3D%22M20%2037l7-7%206%205%209-10%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223.4%22%3E%3C%2Fpath%3E%0A%3Ccircle%20cx%3D%2244%22%20cy%3D%2224.5%22%20r%3D%223.2%22%20fill%3D%22%231d4af3%22%3E%3C%2Fcircle%3E%0A%3Ccircle%20cx%3D%2268%22%20cy%3D%2232%22%20r%3D%2211%22%20stroke%3D%22%23dae6ff%22%20stroke-width%3D%227%22%3E%3C%2Fcircle%3E%0A%3Cpath%20d%3D%22M68%2021a11%2011%200%200%201%209.5%2016.5%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%227%22%3E%3C%2Fpath%3E%0A%3Crect%20x%3D%2216%22%20y%3D%2252%22%20width%3D%228%22%20height%3D%229%22%20rx%3D%222%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2228%22%20y%3D%2247%22%20width%3D%228%22%20height%3D%2214%22%20rx%3D%222%22%20fill%3D%22%235993ff%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2240%22%20y%3D%2243%22%20width%3D%228%22%20height%3D%2218%22%20rx%3D%222%22%20fill%3D%22%231d4af3%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2258%22%20y%3D%2248%22%20width%3D%2220%22%20height%3D%224.5%22%20rx%3D%222.25%22%20fill%3D%22%231d4af3%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2258%22%20y%3D%2257%22%20width%3D%2214%22%20height%3D%224.5%22%20rx%3D%222.25%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3C%2Fsvg%3E',\n  'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Crect%20x%3D%228%22%20y%3D%2276%22%20width%3D%2280%22%20height%3D%226%22%20rx%3D%223%22%20fill%3D%22%23141d57%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2214%22%20y%3D%2258%22%20width%3D%2217%22%20height%3D%2218%22%20rx%3D%223%22%20fill%3D%22%23dae6ff%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2237%22%20y%3D%2246%22%20width%3D%2217%22%20height%3D%2230%22%20rx%3D%223%22%20fill%3D%22%23dae6ff%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2260%22%20y%3D%2232%22%20width%3D%2217%22%20height%3D%2244%22%20rx%3D%223%22%20fill%3D%22%23dae6ff%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223%22%3E%3C%2Frect%3E%0A%3Cpath%20d%3D%22M16%2054l17-11%2014%208%2020-25%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.5%22%3E%3C%2Fpath%3E%0A%3Cpath%20d%3D%22M60%2015h14v14%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.5%22%3E%3C%2Fpath%3E%0A%3Ccircle%20cx%3D%2216%22%20cy%3D%2254%22%20r%3D%225%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%223.4%22%3E%3C%2Fcircle%3E%0A%3Ccircle%20cx%3D%2247%22%20cy%3D%2251%22%20r%3D%225%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%223.4%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E',\n  'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Cpath%20d%3D%22M22%2014a5%205%200%200%201%205-5h26l14%2014v42a5%205%200%200%201-5%205H27a5%205%200%200%201-5-5z%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.5%22%3E%3C%2Fpath%3E%0A%3Cpath%20d%3D%22M53%209v14h14%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.5%22%3E%3C%2Fpath%3E%0A%3Crect%20x%3D%2232%22%20y%3D%2230%22%20width%3D%2230%22%20height%3D%224.5%22%20rx%3D%222.25%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2232%22%20y%3D%2241%22%20width%3D%2230%22%20height%3D%224.5%22%20rx%3D%222.25%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Crect%20x%3D%2232%22%20y%3D%2252%22%20width%3D%2220%22%20height%3D%224.5%22%20rx%3D%222.25%22%20fill%3D%22%23dae6ff%22%3E%3C%2Frect%3E%0A%3Cpath%20d%3D%22M24%2058l14%205v11c0%208-6%2013-14%2016-8-3-14-8-14-16V63z%22%20fill%3D%22%23dae6ff%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223.4%22%3E%3C%2Fpath%3E%0A%3Cpath%20d%3D%22M17%2076l4.5%204.5%208-9%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223.4%22%3E%3C%2Fpath%3E%0A%3Cellipse%20cx%3D%2272%22%20cy%3D%2280%22%20rx%3D%2214%22%20ry%3D%225.5%22%20fill%3D%22%23eef4ff%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223%22%3E%3C%2Fellipse%3E%0A%3Cpath%20d%3D%22M58%2080v-8c0%203%206.3%205.5%2014%205.5s14-2.5%2014-5.5v8%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223%22%20fill%3D%22%23eef4ff%22%3E%3C%2Fpath%3E%0A%3Cellipse%20cx%3D%2272%22%20cy%3D%2266%22%20rx%3D%2214%22%20ry%3D%225.5%22%20fill%3D%22%23eef4ff%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%223%22%3E%3C%2Fellipse%3E%0A%3C%2Fsvg%3E',\n  'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%2096%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Cpath%20d%3D%22M12%2084a10%2010%200%200%201%202-19.8%2013%2013%200%200%201%2024%203.4A8%208%200%200%201%2040%2084z%22%20fill%3D%22%23dae6ff%22%3E%3C%2Fpath%3E%0A%3Cpath%20d%3D%22M40%2084c22%200%2036-12%2042-30%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%224.5%22%3E%3C%2Fpath%3E%0A%3Cpath%20d%3D%22M76%2056l6-4%203%207%22%20stroke%3D%22%231d4af3%22%20stroke-width%3D%224.5%22%3E%3C%2Fpath%3E%0A%3Cg%20transform%3D%22rotate(45%2054%2042)%22%3E%0A%20%20%3Cpath%20d%3D%22M54%2012c9%208%2013%2020%2013%2032H41c0-12%204-24%2013-32z%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23141d57%22%20stroke-width%3D%224.2%22%3E%3C%2Fpath%3E%0A%20%20%3Cpath%20d%3D%22M54%2012c5.5%205%209.3%2011.6%2011.3%2019H42.7C44.7%2023.6%2048.5%2017%2054%2012z%22%20fill%3D%22%231d4af3%22%3E%3C%2Fpath%3E%0A%20%20%3Cpath%20d%3D%22M41%2044c-6%203-9%208-9%2014h9zM67%2044c6%203%209%208%209%2014h-9z%22%20fill%3D%22%235993ff%22%3E%3C%2Fpath%3E%0A%20%20%3Crect%20x%3D%2245%22%20y%3D%2244%22%20width%3D%2218%22%20height%3D%2210%22%20rx%3D%223%22%20fill%3D%22%23141d57%22%3E%3C%2Frect%3E%0A%20%20%3Ccircle%20cx%3D%2254%22%20cy%3D%2232%22%20r%3D%227%22%20fill%3D%22%231d4af3%22%3E%3C%2Fcircle%3E%0A%20%20%3Ccircle%20cx%3D%2254%22%20cy%3D%2232%22%20r%3D%223.2%22%20fill%3D%22%23dae6ff%22%3E%3C%2Fcircle%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E',\n];\n\nconst ICONS = {\"graduation-cap\":\"M2 9 12 4l10 5-10 5L2 9Z M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5\",\"megaphone\":\"M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1Z M15 8a5 5 0 0 1 0 8 M18 5.5a9 9 0 0 1 0 13\",\"user-check\":\"M15 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20 M8.5 10.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z M16 11.5l2 2 4-4\",\"lightbulb\":\"M9 18h6 M10 21h4 M12 3a6 6 0 0 0-3.5 10.9c.6.5.9 1.2.9 1.9V16h5.2v-.2c0-.7.3-1.4.9-1.9A6 6 0 0 0 12 3Z\",\"rocket\":\"M12 2.5c3.2 2.7 4.6 6.2 4.6 9.6L12 16l-4.6-3.9c0-3.4 1.4-6.9 4.6-9.6Z M12 10.2a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4Z M7.4 12.6 5 15v3.5l2.6-1.6 M16.6 12.6 19 15v3.5l-2.6-1.6 M10.4 19.2c.6 1.4 2.6 1.4 3.2 0\",\"users\":\"M16 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20 M9 10.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z M22 20v-1.5a4 4 0 0 0-3-3.9 M16 3.6a4 4 0 0 1 0 7\",\"briefcase\":\"M3 8h18v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8Z M9 8V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V8 M3 13h18\",\"mail\":\"M3 6h18v12H3V6Z M3 7l9 6 9-6\",\"pen-line\":\"M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3Z M14 7l3 3\",\"file-text\":\"M6 3h8l4 4v14H6V3Z M14 3v4h4 M9 12h6 M9 16h6\",\"table\":\"M3 5h18v14H3V5Z M3 10h18 M3 15h18 M10 5v14\",\"bar-chart-3\":\"M4 20V10 M10 20V4 M16 20v-7 M21 20H3\",\"folder-search\":\"M3 6h6l2 2h9v6.5 M3 6v13h8 M17.5 20a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z M20 20l2 2\",\"star\":\"m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9L12 3Z\",\"trending-up\":\"m3 16 6-6 4 4 8-8 M17 6h4v4\",\"wallet\":\"M3 7h15a2 2 0 0 1 2 2v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7Z M3 7V5.5A1.5 1.5 0 0 1 4.5 4H16 M16.5 13.5h.01\",\"award\":\"M12 14a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z M8.5 17.5 7 22l5-2.5L17 22l-1.5-4.5\",\"alert-triangle\":\"M12 4 2.5 20h19L12 4Z M12 10v4 M12 17.5h.01\",\"info\":\"M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z M12 11v5 M12 8h.01\",\"bell\":\"M18 16H6l1.5-2.2V10a4.5 4.5 0 1 1 9 0v3.8L18 16Z M10 19a2 2 0 0 0 4 0\",\"message-circle\":\"M21 11.5a8 8 0 0 1-11.6 7.1L3 21l2.4-6.4A8 8 0 1 1 21 11.5Z\",\"list-checks\":\"M10 6h11 M10 12h11 M10 18h11 M3 6l1.5 1.5L7.5 4.5 M3 17l1.5 1.5L7.5 15.5\",\"square-pen\":\"M11 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6 M17.5 3.5a2.1 2.1 0 0 1 3 3L13 14l-4 1 1-4 7.5-7.5Z\",\"file-check-2\":\"M6 3h8l4 4v14H6V3Z M14 3v4h4 M9 14.5l2 2 4-4\",\"refresh-cw\":\"M20 12a8 8 0 1 1-2.3-5.6 M20 4v5h-5\"};\n\nconst ORANGE = '#ec7f3d', BLUE = '#1d4af3', NAVY = '#141d57';\n\n// acte 3 : bulles claires et sobres\nconst A3_TONE = [\n  { bg: '#ffffff', bd: '#e2e5ee', ic: '#141d57' },\n  { bg: '#ffffff', bd: '#e2e5ee', ic: '#141d57' },\n  { bg: '#ffffff', bd: '#e2e5ee', ic: '#141d57' },\n  { bg: '#ffffff', bd: '#e2e5ee', ic: '#141d57' },\n  { bg: '#ffffff', bd: '#e2e5ee', ic: '#141d57' },\n];\n\nconst clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;\nconst easeOut = u => 1 - Math.pow(1 - u, 3);\nconst easeInOut = u => u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;\nconst lerp = (a, b, u) => a + (b - a) * u;\nconst mixHex = (c1, c2, u) => {\n  const p = h => h.charAt(0) === '#'\n    ? [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]\n    : h.replace(/[^\\d,.]/g, '').split(',').map(Number);\n  const [r1, g1, b1] = p(c1), [r2, g2, b2] = p(c2);\n  return 'rgb(' + Math.round(lerp(r1, r2, u)) + ',' + Math.round(lerp(g1, g2, u)) + ',' + Math.round(lerp(b1, b2, u)) + ')';\n};\n\nclass Component extends DCLogic {\n  constructor(props) {\n    super(props);\n    this.el = { node: [], circle: [], label: [], iconA: [], iconB: [], iconC: [], popup: [], warn: [], chip: [], chipText: [], result: [], link: [], light: [], illu: [], roleRow: [] };\n    // le bord attaquant du faisceau pointe l'angle A quand la rotation vaut A + 90 - beam0\n    this.scanWake = SLOTS.map(s => s.a2\n      ? T.sweepStart + T.sweepTurn * ((((s.a2.angle + 90 - T.beam0) % 360) + 360) % 360) / 360\n      : Infinity);\n    this.warnAppear = this.scanWake.slice(0, SCAN_LABELS.length).map(w => w + T.warnLag);\n    const k = i => A1_ORDER.indexOf(i);\n    this.roleAt = SLOTS.map((s, i) => T.roleStart + k(i) * T.roleStep);\n    this.orangeAt = SLOTS.map((s, i) => T.bubbleOrange + k(i) * T.bubbleOrangeStep);\n    this.blueAt = SLOTS.map((s, i) => T.blueStart + k(i) * T.blueStep);\n    this.linkAt = SLOTS.map((s, i) => T.linkStart + k(i) * T.linkStagger);\n    // couronne régulière autour du centre, une fois les bulles passées au bleu\n    this.ringPos = SLOTS.map((s, i) => ({\n      ang: -90 + k(i) * (360 / SLOTS.length),\n      r: T.ringR,\n      size: 1,\n    }));\n    this.a3At = SLOTS.map((s, i) => s.a3 ? T.a3Start + i * T.a3Step : Infinity);\n  }\n\n  componentDidMount() { this.start(); }\n  componentDidUpdate() { this.start(); }\n\n  start() {\n    if (this.raf) return;\n    if (this.t0 === undefined) this.t0 = performance.now();\n    this.tick = this.tick.bind(this);\n    this.raf = requestAnimationFrame(this.tick);\n  }\n\n  componentWillUnmount() { cancelAnimationFrame(this.raf); this.raf = 0; }\n\n  tick(now) {\n    this.frame((now - this.t0) % T.loop);\n    this.raf = requestAnimationFrame(this.tick);\n  }\n\n  // les bulles sont posées, puis mises en rotation, puis stoppées\n  orbit(s, t) {\n    const spinU = easeInOut(clamp01((t - T.spinStart) / T.spinDur));\n    const outer = s.a1.ring === 'outer';\n    return {\n      ang: outer ? -90 + 90 * s.a1.idx + spinU * 62 : -30 + 120 * s.a1.idx - spinU * 86,\n      r: outer ? 158 : 100,\n      size: outer ? 1.12 : 0.92,\n    };\n  }\n\n  slotPos(s, t, i) {\n    const p2 = this.orbit(s, t);\n    const p1 = s.a2 ? { ang: s.a2.angle, r: s.a2.r, size: 1 } : p2;\n    if (t < T.t12) return p1;\n    if (t < T.t12 + T.t12Dur) {\n      const u = easeInOut(clamp01((t - T.t12) / T.t12Dur));\n      return { ang: lerp(p1.ang, p2.ang, u), r: lerp(p1.r, p2.r, u), size: lerp(p1.size, p2.size, u) };\n    }\n    if (t < T.regroupAt) return p2;\n    // regroupement en couronne régulière avant le tissage des fils\n    const ring = this.ringPos[i];\n    if (t < T.regroupAt + T.regroupDur) {\n      const u = easeInOut(clamp01((t - T.regroupAt) / T.regroupDur));\n      return { ang: lerp(p2.ang, ring.ang, u), r: lerp(p2.r, ring.r, u), size: lerp(p2.size, ring.size, u) };\n    }\n    // les bulles disparaissent à la bascule : on peut rejoindre la position finale sans transition\n    if (t < T.t23 + 700 || !s.a3) return ring;\n    return { ang: s.a3.angle, r: s.a3.r, size: s.a3.size };\n  }\n\n  frame(t) {\n    const el = this.el;\n    const eraseU = easeInOut(clamp01((t - T.erase) / 900));\n    const inA1 = t < T.t12 + 750;\n    const inA2 = !inA1 && t < T.t23 + 400;\n    const inA3 = !inA1 && !inA2;\n    const wiped = clamp01((t - T.wipe) / 700);\n    const morph = easeInOut(clamp01((t - T.t23) / 1400));\n    const logoU = easeInOut(clamp01((t - T.wipe) / T.logoDur));\n    const outA2 = easeInOut(clamp01((t - T.t23) / 600));\n\n    let warnPulse = 0;\n    this.warnAppear.forEach(w => {\n      const since = t - w;\n      if (since >= 0 && since < 800) warnPulse = Math.max(warnPulse, Math.sin(Math.PI * (since / 800)));\n    });\n    let resPulse = 0;\n    RESULTS.forEach((r, i) => {\n      const since = t - (T.resultStart + i * T.resultStep);\n      if (since >= 0 && since < 900) resPulse = Math.max(resPulse, Math.sin(Math.PI * (since / 900)));\n    });\n    // le noyau bat à chaque illustration qui apparaît\n    let illuPulse = 0;\n    ILLUS.forEach((src, i) => {\n      const since = t - (T.illuStart + i * T.illuStep);\n      if (since >= 0 && since < 800) illuPulse = Math.max(illuPulse, Math.sin(Math.PI * (since / 800)));\n    });\n\n    // ---- sonar ----\n    const scanning = t < T.t12;\n    if (el.sweep) {\n      setS(el.sweep, 'transform', 'rotate(' + (T.beam0 + 360 * ((t - T.sweepStart) / T.sweepTurn)) + 'deg)');\n      setS(el.sweep, 'opacity', scanning ? String(clamp01((t - T.sweepStart) / 500) * (1 - clamp01((t - T.t12 + 700) / 700))) : '0');\n    }\n    if (el.ping) {\n      const pu = clamp01(((t - T.sweepStart) % T.sweepTurn) / T.sweepTurn);\n      setS(el.ping, 'transform', 'scale(' + lerp(0.24, 1, pu) + ')');\n      setS(el.ping, 'opacity', scanning ? String(0.5 * (1 - pu)) : '0');\n    }\n    const ringsOut = 1 - easeInOut(clamp01((t - T.t12 + 400) / 800));\n    if (el.ring1) setS(el.ring1, 'opacity', String(ringsOut));\n    if (el.ring2) setS(el.ring2, 'opacity', String(ringsOut));\n\n    // ---- noyau ----\n    if (el.coreWarn) {\n      setS(el.coreWarn, 'opacity', String(inA1 ? clamp01(t / 400) : 0));\n      setS(el.coreWarn, 'transform', 'scale(' + (1 + 0.24 * warnPulse) + ')');\n    }\n    if (el.coreLabel) {\n      const shown = A1_ORDER.filter((_, k) => t >= T.roleStart + k * T.roleStep);\n      const last = shown.length ? SLOTS[shown[shown.length - 1]].a1.label : '';\n      if (el.coreLabel.textContent !== last) el.coreLabel.textContent = last;\n      const pop = shown.length ? clamp01((t - (T.roleStart + (shown.length - 1) * T.roleStep)) / 300) : 0;\n      setS(el.coreLabel, 'opacity', String(inA2 && shown.length ? pop : 0));\n      setS(el.coreLabel, 'transform', 'scale(' + lerp(0.82, 1, pop) + ')');\n    }\n    if (el.halo) {\n      const pulse = inA3 ? Math.max(resPulse, illuPulse) : (inA1 ? warnPulse : 0);\n      setS(el.halo, 'background', inA3 ? 'rgba(29,74,243,0.32)' : 'rgba(236,127,61,0.35)');\n      setS(el.halo, 'opacity', String(0.9 * pulse * (1 - wiped)));\n      setS(el.halo, 'transform', 'scale(' + lerp(1, 1.9, pulse) + ')');\n    }\n    if (el.coreTarget) setS(el.coreTarget, 'opacity', String(inA3 ? (1 - wiped) : 0));\n    // le noyau ne disparaît jamais : il porte la boucle\n    if (el.core) {\n      const breath = 1 + 0.05 * Math.sin((t % 4200) / 4200 * Math.PI * 2);\n      setS(el.core, 'transform', 'scale(' + (breath + 0.15 * illuPulse) + ')');\n      const open = inA3 ? clamp01((t - T.t23) / 900) : 0;\n      const back = easeInOut(clamp01((t - T.titleOut) / 900));\n      setS(el.core, 'background', mixHex(mixHex(mixHex(NAVY, '#ffffff', open), NAVY, logoU), NAVY, back));\n    }\n    ILLUS.forEach((src, i) => {\n      const node = el.illu[i];\n      if (!node) return;\n      const start = T.illuStart + i * T.illuStep;\n      const inU = clamp01((t - start) / 450);\n      const outU = i < ILLUS.length - 1 ? clamp01((t - (start + T.illuStep)) / 450) : clamp01((t - T.wipe) / 500);\n      setS(node, 'opacity', String(inA3 ? inU * (1 - outU) : 0));\n      setS(node, 'transform', 'scale(' + lerp(0.72, 1, inU) + ')');\n    });\n\n\n    // ---- bulles ----\n    SLOTS.forEach((s, i) => {\n      const box = el.node[i];\n      if (!box) return;\n      const p = this.slotPos(s, t, i);\n      const a = p.ang * Math.PI / 180;\n      const x = Math.cos(a) * p.r;\n      const y = Math.sin(a) * p.r;\n\n      const birth = t - this.scanWake[i];\n      const roleSince = t - this.roleAt[i];\n      const a3Since = t - this.a3At[i];\n\n      let opacity = s.a2 && birth >= 0 ? clamp01(birth / 380) : 0;\n      opacity *= 1 - easeInOut(clamp01((t - T.t12) / 900));\n      if (roleSince >= 0) opacity = Math.max(opacity, clamp01(roleSince / 380));\n      opacity *= 1 - outA2;\n      if (s.a3 && a3Since >= 0) opacity = Math.max(opacity, clamp01(a3Since / 420));\n      opacity *= 1 - eraseU;\n\n      const popAt = (since, dur) => {\n        if (since < 0 || since > dur) return 1;\n        const b = since / dur;\n        let v = 1 + 0.17 * Math.sin(Math.PI * b) * (1 - b * 0.35);\n        if (since < dur * 0.32) v *= easeOut(since / (dur * 0.32));\n        return v;\n      };\n      let bounce = 1;\n      if (s.a2 && birth >= 0 && birth < 760) bounce = popAt(birth, 760);\n      if (roleSince >= 0 && roleSince < 760) bounce = popAt(roleSince, 760);\n      if (a3Since >= 0 && a3Since < 760) bounce = popAt(a3Since, 760);\n      // acte 1 : la bulle réagit quand son irritant est signalé\n      const wSince = t - (this.warnAppear[i] !== undefined ? this.warnAppear[i] : Infinity);\n      if (wSince >= 0 && wSince < 800) bounce *= 1 + 0.22 * Math.sin(Math.PI * (wSince / 800));\n      const blueSince = t - this.blueAt[i];\n      if (blueSince >= 0 && blueSince < 600) bounce *= 1 + 0.14 * Math.sin(Math.PI * (blueSince / 600));\n\n      setS(box, 'opacity', String(opacity));\n      setS(box, 'transform', 'translate(' + x + 'px,' + y + 'px) scale(' + (bounce * p.size) + ')');\n\n      const orangeU = easeOut(clamp01((t - this.orangeAt[i]) / 420));\n      const blueU = easeOut(clamp01((t - this.blueAt[i]) / 450));\n      const tone = A3_TONE[i] || A3_TONE[0];\n      if (el.circle[i]) {\n        setS(el.circle[i], 'background', mixHex(mixHex('#ffffff', tone.bg, morph), NAVY, logoU));\n        setS(el.circle[i], 'borderColor', mixHex(mixHex(mixHex(mixHex('#b9bdd0', '#f0b189', orangeU), '#9dbcff', blueU), tone.bd, morph), NAVY, logoU));\n        setS(el.circle[i], 'boxShadow', '0 6px 16px rgba(20,29,87,' + (0.06 * (1 - logoU)).toFixed(3) + ')');\n      }\n      if (el.iconA[i]) {\n        setS(el.iconA[i], 'opacity', String(inA2 ? 1 : 0));\n        setS(el.iconA[i], 'color', mixHex(mixHex(NAVY, ORANGE, orangeU), BLUE, blueU));\n      }\n      if (el.iconB[i]) setS(el.iconB[i], 'opacity', String(inA1 ? 1 : 0));\n      if (el.iconC[i]) {\n        setS(el.iconC[i], 'opacity', String(inA3 ? (1 - wiped) : 0));\n        setS(el.iconC[i], 'color', tone.ic);\n      }\n      if (el.label[i] && s.a3) {\n        const inU = clamp01((a3Since - 300) / 420);\n        setS(el.label[i], 'opacity', String(inA3 ? inU * (1 - wiped) : 0));\n        setS(el.label[i], 'transform', 'translateX(-50%) translateY(' + lerp(6, 0, easeOut(inU)) + 'px)');\n      }\n\n      // ---- liens ----\n      const line = el.link[i];\n      const light = el.light[i];\n      if (line) {\n        let draw = 0, vis = 0;\n        if (t < T.t23 + 600) {\n          draw = easeOut(clamp01((t - this.linkAt[i]) / T.linkDraw));\n          vis = draw * 0.95 * (1 - outA2);\n        } else if (s.a3) {\n          draw = easeOut(clamp01((a3Since - T.a3LinkLag) / T.a3LinkDraw));\n          vis = draw * 0.95 * (1 - eraseU);\n        }\n        setA(line, 'x2', String(lerp(200, 200 + x, draw)));\n        setA(line, 'y2', String(lerp(200, 200 + y, draw)));\n        setA(line, 'opacity', String(vis));\n        setA(line, 'stroke', mixHex(mixHex(mixHex('#b9bdd0', '#bcd4ff', blueU), '#8fb9ff', morph), NAVY, logoU));\n        setA(line, 'stroke-width', String(lerp(lerp(1.4, 2.4, morph), 3, logoU)));\n      }\n      if (light && s.a3) {\n        setA(light, 'x2', String(200 + x));\n        setA(light, 'y2', String(200 + y));\n        const on = clamp01((a3Since - T.a3LightLag) / 500) * (1 - clamp01((t - T.wipe) / 600));\n        setA(light, 'opacity', String(inA3 ? on * 0.9 : 0));\n        setS(light, 'strokeDashoffset', String((i % 2 === 0 ? -1 : 1) * ((t / 16) % 51)));\n      }\n    });\n\n    // ---- infobulles de scan + alertes (acte 1) ----\n    let warnCount = 0;\n    SCAN_LABELS.forEach((p, i) => {\n      const node = el.popup[i];\n      const since = t - this.scanWake[i];\n      const inU = since >= 0 ? clamp01(since / 380) : 0;\n      const outU = clamp01((t - T.t12) / 600);\n      if (node) {\n        setS(node, 'opacity', String(inU * (1 - outU)));\n        setS(node, 'transform', 'translateX(' + lerp(20, 0, inU) + 'px)');\n      }\n      const wSince = t - this.warnAppear[i];\n      const wU = wSince >= 0 ? clamp01(wSince / T.warnDur) : 0;\n      if (wSince >= 0) warnCount++;\n      if (el.warn[i]) {\n        setS(el.warn[i], 'opacity', String(wU * (1 - outU)));\n        setS(el.warn[i], 'transform', 'scale(' + lerp(0.6, 1, wU) + ')');\n      }\n      if (node && wU > 0) setS(node, 'borderColor', mixHex('#dfe0e6', '#f0b189', wU * (1 - outU)));\n    });\n\n    // ---- jauge ----\n    if (el.gauge) {\n      const inU = clamp01((t - T.gaugeIn) / 500);\n      const outU = clamp01((t - T.t12) / 600);\n      setS(el.gauge, 'opacity', String(inU * (1 - outU)));\n    }\n    const kept = 90 - warnCount * 11;\n    if (el.gaugeFill) setS(el.gaugeFill, 'width', kept + '%');\n    if (el.gaugeVal && el.gaugeVal.textContent !== kept + ' %') el.gaugeVal.textContent = kept + ' %';\n    if (el.gaugeLost && el.gaugeLost.textContent !== (100 - kept) + ' %') el.gaugeLost.textContent = (100 - kept) + ' %';\n\n    // ---- carte « les acteurs réunis » (acte 2) ----\n    if (el.rolesCard) {\n      const inU = clamp01((t - T.listIn) / 450);\n      const outU = clamp01((t - T.listOut) / 500);\n      setS(el.rolesCard, 'opacity', String(inU * (1 - outU)));\n      setS(el.rolesCard, 'transform', 'translateX(' + lerp(22, 0, easeOut(inU)) + 'px)');\n    }\n    A1_ORDER.forEach((slot, k) => {\n      const row = el.roleRow[k];\n      if (!row) return;\n      const inU = clamp01((t - (T.roleStart + k * T.roleStep)) / 380);\n      setS(row, 'opacity', String(inU));\n      setS(row, 'transform', 'translateX(' + lerp(12, 0, easeOut(inU)) + 'px)');\n    });\n\n    // ---- infobulles acte 2 : noir -> orange -> bleu ----\n    const chipsOut = easeInOut(clamp01((t - T.t23) / 700));\n    CHIPS.forEach((c, i) => {\n      const node = el.chip[i];\n      if (!node) return;\n      const since = t - (T.chipStart + i * T.chipStep);\n      const inU = since >= 0 ? clamp01(since / 400) : 0;\n      const orangeU = easeOut(clamp01((t - (T.chipOrange + i * T.chipOrangeStep)) / 420));\n      const blueU = easeOut(clamp01((t - (T.chipBlue + i * T.chipBlueStep)) / 450));\n      const flashO = orangeU > 0 && orangeU < 1 ? Math.sin(Math.PI * orangeU) : 0;\n      const flashB = blueU > 0 && blueU < 1 ? Math.sin(Math.PI * blueU) : 0;\n      const flash = Math.max(flashO, flashB);\n      setS(node, 'opacity', String(inU * (1 - chipsOut)));\n      setS(node, 'transform', 'translateY(' + lerp(10, 0, inU) + 'px) scale(' + (1 + 0.05 * flash) + ')');\n      setS(node, 'color', mixHex(mixHex(NAVY, ORANGE, orangeU), BLUE, blueU));\n      setS(node, 'borderColor', mixHex(mixHex('#dfe0e6', '#f0b189', orangeU), '#bcd4ff', blueU));\n      if (el.chipText[i]) setS(el.chipText[i], 'color', mixHex(mixHex(NAVY, ORANGE, orangeU), BLUE, blueU));\n    });\n\n    // ---- bénéfices : après les flux, jusqu'à la fin ----\n    if (el.resultWrap) setS(el.resultWrap, 'opacity', String(t >= T.resultStart - 200 ? 1 : 0));\n    const lastStart = T.resultStart + (RESULTS.length - 1) * T.resultStep;\n    const settle = easeOut(clamp01((t - lastStart - 900) / 700));\n    const outroU = clamp01((t - T.titleOut) / 800);\n    RESULTS.forEach((r, i) => {\n      const node = el.result[i];\n      if (!node) return;\n      const since = t - (T.resultStart + i * T.resultStep);\n      const inU = easeOut(clamp01(since / 520));\n      const isLast = i === RESULTS.length - 1;\n      const active = since >= 0 && (isLast || t < T.resultStart + (i + 1) * T.resultStep);\n      const dim = active ? 1 : lerp(0.46, 1, settle);\n      const pop = since >= 0 && since < 900 ? Math.sin(Math.PI * (since / 900)) : 0;\n      setS(node, 'opacity', String(inU * dim * (1 - outroU)));\n      setS(node, 'transform', 'translateX(' + lerp(38, 0, inU) + 'px) scale(' + (lerp(0.93, 1, inU) + 0.05 * pop) + ')');\n      setS(node, 'boxShadow', '0 10px 26px rgba(20,29,87,' + (0.07 + 0.14 * pop).toFixed(3) + ')');\n      setS(node, 'borderColor', mixHex('#e6e7ed', r.accent, 0.55 * pop));\n    });\n\n    // ---- signature finale ----\n    if (el.title) {\n      const inU = clamp01((t - T.titleIn) / 700) * (1 - outroU);\n      setS(el.title, 'opacity', String(inU));\n      setS(el.title, 'transform', 'translateY(' + lerp(14, 0, inU) + 'px)');\n    }\n  }\n\n  renderVals() {\n    this.start();\n    const set = (bucket, i) => node => { this.el[bucket][i] = node; };\n    return {\n      stageRef: n => { this.el.stage = n; },\n      ring1Ref: n => { this.el.ring1 = n; },\n      ring2Ref: n => { this.el.ring2 = n; },\n      sweepRef: n => { this.el.sweep = n; },\n      pingRef: n => { this.el.ping = n; },\n      haloRef: n => { this.el.halo = n; },\n      coreRef: n => { this.el.core = n; },\n      coreLabelRef: n => { this.el.coreLabel = n; },\n      coreWarnRef: n => { this.el.coreWarn = n; },\n      coreTargetRef: n => { this.el.coreTarget = n; },\n      gaugeRef: n => { this.el.gauge = n; },\n      gaugeFillRef: n => { this.el.gaugeFill = n; },\n      gaugeValRef: n => { this.el.gaugeVal = n; },\n      gaugeLostRef: n => { this.el.gaugeLost = n; },\n      rolesCardRef: n => { this.el.rolesCard = n; },\n      roleList: A1_ORDER.map((slot, k) => ({\n        label: SLOTS[slot].a1.label,\n        icon: ICONS[SLOTS[slot].icA],\n        ref: set('roleRow', k),\n      })),\n      coreIllus: ILLUS.map((src, i) => ({\n        ref: node => {\n          this.el.illu[i] = node;\n          if (node && node.getAttribute('src') !== src) setA(node, 'src', src);\n        },\n      })),\n      resultWrapRef: n => { this.el.resultWrap = n; },\n      titleRef: n => { this.el.title = n; },\n      links: SLOTS.map((s, i) => ({ ref: set('link', i), lightRef: set('light', i) })),\n      nodes: SLOTS.map((s, i) => ({\n        iconA: ICONS[s.icA], iconB: ICONS[s.icB], iconC: ICONS[s.icC], labelC: s.labelC,\n        ref: set('node', i),\n        circleRef: set('circle', i),\n        labelRef: set('label', i),\n        iconARef: set('iconA', i),\n        iconBRef: set('iconB', i),\n        iconCRef: set('iconC', i),\n      })),\n      scanPopups: SCAN_LABELS.map((p, i) => ({ ...p, icon: ICONS[p.icon], ref: set('popup', i), warnRef: set('warn', i) })),\n      chips: CHIPS.map((c, i) => ({ ...c, icon: ICONS[c.icon], ref: set('chip', i), textRef: set('chipText', i) })),\n      resultChips: RESULTS.map((r, i) => ({\n        ...r,\n        icon: ICONS[r.icon],\n        ref: set('result', i),\n        tileRef: node => {\n          if (!node) return;\n          setS(node, 'background', r.tint);\n          setS(node, 'color', r.accent);\n        },\n      })),\n    };\n  }\n}\n\n<\u002Fscript>\n\n\n<\u002Fbody><\u002Fhtml>"
   </script>
 </body>
+
 </html>
